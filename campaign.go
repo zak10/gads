@@ -187,7 +187,11 @@ type CampaignLabelOperations map[string][]CampaignLabel
 //     https://developers.google.com/adwords/api/docs/reference/v201409/CampaignService#get
 //
 func (s *CampaignService) Get(selector Selector) (campaigns []Campaign, totalCount int64, err error) {
-	selector.XMLName = xml.Name{"", "serviceSelector"}
+	// The default namespace, "", will break in 1.5 with the addition of
+	// custom namespace support.  Hence, we have to ensure that the baseUrl is
+	// set again as the proper namespace for the service/serviceSelector element
+	selector.XMLName = xml.Name{baseUrl, "serviceSelector"}
+
 	respBody, err := s.Auth.request(
 		campaignServiceUrl,
 		"get",

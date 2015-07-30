@@ -133,7 +133,7 @@ func NewNegativeCampaignCriterion(campaignId int64, bidModifier float64, criteri
 */
 
 func (s *CampaignCriterionService) Get(selector Selector) (campaignCriterions CampaignCriterions, totalCount int64, err error) {
-	selector.XMLName = xml.Name{"", "serviceSelector"}
+	selector.XMLName = xml.Name{baseUrl, "serviceSelector"}
 	respBody, err := s.Auth.request(
 		campaignCriterionServiceUrl,
 		"get",

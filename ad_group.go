@@ -84,7 +84,7 @@ type AdGroupLabelOperations map[string][]AdGroupLabel
 //     https://developers.google.com/adwords/api/docs/reference/v201409/AdGroupService#get
 //
 func (s *AdGroupService) Get(selector Selector) (adGroups []AdGroup, totalCount int64, err error) {
-	selector.XMLName = xml.Name{"", "serviceSelector"}
+	selector.XMLName = xml.Name{baseUrl, "serviceSelector"}
 	respBody, err := s.Auth.request(
 		adGroupServiceUrl,
 		"get",

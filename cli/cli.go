@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/emiddleton/gads"
+	"github.com/colinmutter/gads"
 	"golang.org/x/oauth2"
 	"log"
 )
@@ -13,7 +13,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	bs := gads.NewBudgetService(config.Auth)
+	bs := gads.NewBudgetService(&config.Auth)
 
 	var pageSize int64 = 500
 	var offset int64 = 0
@@ -51,7 +51,7 @@ func main() {
 	}
 
 	// show all Campaigns
-	cs := gads.NewCampaignService(config.Auth)
+	cs := gads.NewCampaignService(&config.Auth)
 	offset = 0
 	paging = gads.Paging{
 		Offset: offset,
@@ -100,7 +100,7 @@ func main() {
 		}
 	}
 
-	ags := gads.NewAdGroupService(config.Auth)
+	ags := gads.NewAdGroupService(&config.Auth)
 	offset = 0
 	paging = gads.Paging{
 		Offset: offset,
@@ -142,7 +142,7 @@ func main() {
 		}
 	}
 
-	agas := gads.NewAdGroupAdService(config.Auth)
+	agas := gads.NewAdGroupAdService(&config.Auth)
 	offset = 0
 	paging = gads.Paging{
 		Offset: offset,

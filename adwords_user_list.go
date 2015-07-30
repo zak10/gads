@@ -196,7 +196,7 @@ func NewSimilarUserList(name, description, status, integrationCode string, membe
 //     https://developers.google.com/adwords/api/docs/reference/v201409/AdwordsUserListService#get
 //
 func (s AdwordsUserListService) Get(selector Selector) (userLists []UserList, err error) {
-	selector.XMLName = xml.Name{"", "serviceSelector"}
+	selector.XMLName = xml.Name{baseUrl, "serviceSelector"}
 	respBody, err := s.Auth.request(
 		adwordsUserListServiceUrl,
 		"get",

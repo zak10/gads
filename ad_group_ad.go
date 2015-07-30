@@ -198,7 +198,7 @@ type AdUrlUpgrade struct {
 //     https://developers.google.com/adwords/api/docs/reference/v201409/AdGroupAdService#get
 //
 func (s AdGroupAdService) Get(selector Selector) (adGroupAds AdGroupAds, totalCount int64, err error) {
-	selector.XMLName = xml.Name{"", "serviceSelector"}
+	selector.XMLName = xml.Name{baseUrl, "serviceSelector"}
 	respBody, err := s.Auth.request(
 		adGroupAdServiceUrl,
 		"get",

@@ -139,7 +139,7 @@ type AdGroupCriterionOperations map[string]AdGroupCriterions
 //     https://developers.google.com/adwords/api/docs/reference/v201409/AdGroupCriterionService#get
 //
 func (s AdGroupCriterionService) Get(selector Selector) (adGroupCriterions AdGroupCriterions, totalCount int64, err error) {
-	selector.XMLName = xml.Name{"", "serviceSelector"}
+	selector.XMLName = xml.Name{baseUrl, "serviceSelector"}
 	respBody, err := s.Auth.request(
 		adGroupCriterionServiceUrl,
 		"get",

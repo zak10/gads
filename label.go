@@ -56,7 +56,7 @@ type LabelOperations map[string][]Label
 //     https://developers.google.com/adwords/api/docs/reference/v201409/LabelService#get
 //
 func (s LabelService) Get(selector Selector) (labels []Label, totalCount int64, err error) {
-	selector.XMLName = xml.Name{"", "serviceSelector"}
+	selector.XMLName = xml.Name{baseUrl, "serviceSelector"}
 	respBody, err := s.Auth.request(
 		labelServiceUrl,
 		"get",

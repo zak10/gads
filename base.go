@@ -7,11 +7,12 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"testing"
 )
 
 const (
-	baseUrl = "https://adwords.google.com/api/adwords/cm/v201409"
+	baseUrl = "https://adwords.google.com/api/adwords/cm/v201506"
 )
 
 type ServiceUrl struct {
@@ -152,6 +153,11 @@ func (a *Auth) request(serviceUrl ServiceUrl, action string, body interface{}) (
 		"  ", "  ")
 	if err != nil {
 		return []byte{}, err
+	}
+
+	// Added some logging/"ppor man's" debugging to inspect outbound SOAP requests
+	if level := os.Getenv("DEBUG"); level != "" {
+		fmt.Println(string(reqBody))
 	}
 
 	req, err := http.NewRequest("POST", serviceUrl.String(), bytes.NewReader(reqBody))
