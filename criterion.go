@@ -149,6 +149,13 @@ type Address struct {
 	CountryCode    string `xml:"countryCode"`
 }
 
+type ProductPartition struct {
+	Id                int64  `xml:"id,omitempty"`
+	CriteriaType      string `xml:"type"`
+	PartitionType     string `xml:"partitionType,omitempty"`
+	ParentCriterionId int64  `xml:"parentCriterionId,omitempty"`
+}
+
 // RadiusDistanceUnits: KILOMETERS, MILES
 // RadiusUnits:
 type ProximityCriterion struct {
@@ -260,6 +267,10 @@ func criterionUnmarshalXML(dec *xml.Decoder, start xml.StartElement) (Criterion,
 		return c, err
 	case "Product":
 		c := ProductCriterion{}
+		err := dec.DecodeElement(&c, &start)
+		return c, err
+	case "ProductPartition":
+		c := ProductPartition{}
 		err := dec.DecodeElement(&c, &start)
 		return c, err
 	case "Proximity":
