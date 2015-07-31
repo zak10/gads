@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	baseUrl = "https://adwords.google.com/api/adwords/cm/v201409"
+	baseUrl = "https://adwords.google.com/api/adwords/cm/v201506"
 )
 
 type ServiceUrl struct {
@@ -153,7 +153,6 @@ func (a *Auth) request(serviceUrl ServiceUrl, action string, body interface{}) (
 	if err != nil {
 		return []byte{}, err
 	}
-
 	req, err := http.NewRequest("POST", serviceUrl.String(), bytes.NewReader(reqBody))
 	req.Header.Add("Accept", "text/xml")
 	req.Header.Add("Accept", "multipart/*")

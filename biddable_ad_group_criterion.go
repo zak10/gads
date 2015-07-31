@@ -6,8 +6,9 @@ import (
 )
 
 type BiddableAdGroupCriterion struct {
-	AdGroupId int64     `xml:"adGroupId"`
-	Criterion Criterion `xml:"criterion"`
+	AdGroupId    int64     `xml:"adGroupId"`
+	CriterionUse string    `xml:"criterionUse"`
+	Criterion    Criterion `xml:"criterion"`
 
 	// BiddableAdGroupCriterion
 	UserStatus          string   `xml:"userStatus,omitempty"`
@@ -16,8 +17,8 @@ type BiddableAdGroupCriterion struct {
 	DisapprovalReasons  []string `xml:"disapprovalReasons,omitempty"`
 	DestinationUrl      string   `xml:"destinationUrl,omitempty"`
 
-	FirstPageCpc *Cpc `xml:"firstPageCpc>amount,omitempty"`
-	TopOfPageCpc *Cpc `xml:"topOfPageCpc>amount,omitempty"`
+	FirstPageCpc *Cpc `xml:"firstPageCpc,omitempty"`
+	TopOfPageCpc *Cpc `xml:"topOfPageCpc,omitempty"`
 
 	QualityInfo *QualityInfo `xml:"qualityInfo,omitempty"`
 
@@ -61,6 +62,10 @@ func (bagc *BiddableAdGroupCriterion) UnmarshalXML(dec *xml.Decoder, start xml.S
 			switch tag {
 			case "adGroupId":
 				if err := dec.DecodeElement(&bagc.AdGroupId, &start); err != nil {
+					return err
+				}
+			case "criterionUse":
+				if err := dec.DecodeElement(&bagc.CriterionUse, &start); err != nil {
 					return err
 				}
 			case "criterion":

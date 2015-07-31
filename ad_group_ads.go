@@ -81,6 +81,18 @@ func (aga *AdGroupAds) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) er
 						return err
 					}
 					ad = a
+				case "DynamicSearchAd":
+					a := DynamicSearchAd{AdGroupId: adGroupId}
+					err := dec.DecodeElement(&a, &start)
+					if err != nil {
+						return err
+					}
+				case "ProductAd":
+					a := ProductAd{AdGroupId: adGroupId}
+					err := dec.DecodeElement(&a, &start)
+					if err != nil {
+						return err
+					}
 				default:
 					return fmt.Errorf("unknown AdGroupCriterion -> %#v", start)
 				}
@@ -129,6 +141,18 @@ func (aga *AdGroupAds) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) er
 		a.TrademarkDisapproved = trademarkDisapproved
 		*aga = append(*aga, a)
 	case TemplateAd:
+		a.Status = status
+		a.ApprovalStatus = approvalStatus
+		a.DisapprovalReasons = disapprovalReasons
+		a.TrademarkDisapproved = trademarkDisapproved
+		*aga = append(*aga, a)
+	case DynamicSearchAd:
+		a.Status = status
+		a.ApprovalStatus = approvalStatus
+		a.DisapprovalReasons = disapprovalReasons
+		a.TrademarkDisapproved = trademarkDisapproved
+		*aga = append(*aga, a)
+	case ProductAd:
 		a.Status = status
 		a.ApprovalStatus = approvalStatus
 		a.DisapprovalReasons = disapprovalReasons
