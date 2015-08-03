@@ -2,10 +2,10 @@ package gads
 
 import (
 	"encoding/json"
-	"io/ioutil"
-
+	"flag"
 	"golang.org/x/net/context"
 	"golang.org/x/oauth2"
+	"io/ioutil"
 )
 
 type AuthConfig struct {
@@ -31,6 +31,7 @@ func NewCredentialsFromFile(pathToFile string, ctx context.Context) (ac AuthConf
 }
 
 func NewCredentials(ctx context.Context) (ac AuthConfig, err error) {
+	flag.Parse()
 	return NewCredentialsFromFile(*configJson, ctx)
 }
 
