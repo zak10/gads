@@ -113,6 +113,11 @@ type Selector struct {
 	Paging     *Paging     `xml:"paging,omitempty"`
 }
 
+type AWQLQuery struct {
+	XMLName xml.Name
+	Query   string `xml:"query"`
+}
+
 // error parsers
 func selectorError() (err error) {
 	return err

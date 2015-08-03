@@ -252,12 +252,36 @@ func (s *AdGroupService) MutateLabel(adGroupLabelOperations AdGroupLabelOperatio
 	return mutateResp.AdGroupLabels, err
 }
 
-// Query is not yet implemented
-//
 // Relevant documentation
 //
 //     https://developers.google.com/adwords/api/docs/reference/v201409/AdGroupService#query
 //
-func (s *AdGroupService) Query(query string) (adGroups []AdGroup, err error) {
-	return adGroups, ERROR_NOT_YET_IMPLEMENTED
+func (s *AdGroupService) Query(query string) (adGroups []AdGroup, totalCount int64, err error) {
+
+	respBody, err := s.Auth.request(
+		adGroupServiceUrl,
+		"query",
+		AWQLQuery{
+			XMLName: xml.Name{
+				Space: baseUrl,
+				Local: "query",
+			},
+			Query: query,
+		},
+	)
+
+	if err != nil {
+		return adGroups, totalCount, err
+	}
+	getResp := struct {
+		Size     int64     `xml:"rval>totalNumEntries"`
+		AdGroups []AdGroup `xml:"rval>entries"`
+	}{}
+	fmt.Printf("%s\n", respBody)
+	err = xml.Unmarshal([]byte(respBody), &getResp)
+	if err != nil {
+		return adGroups, totalCount, err
+	}
+	return getResp.AdGroups, getResp.Size, err
+
 }
