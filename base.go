@@ -26,7 +26,7 @@ var (
 )
 
 var (
-	configJson = flag.String("config_json", "./config.json", "API credentials")
+	configJson = flag.String("c", "./config.json", "API credentials")
 
 	// service urls
 	adGroupAdServiceUrl             = ServiceUrl{baseUrl, "AdGroupAdService"}
