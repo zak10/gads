@@ -1,3 +1,0 @@
-package gads
-
-import ()

@@ -1,11 +1,19 @@
 # gads
 
-Package gads provides a wrapper for the Google Adwords SOAP API.
+Package gads provides a wrapper for the Google Adwords SOAP API.  Based off of
+[emiddleton/gads](https://github.com/emiddleton/gads), this version
+was updated to support v201506 and Go 1.5.
+
+Currently this project remains a fork and is a joint effort between
+[colinmutter/gads](https://github.com/colinmutter/gads) (working on AWQL,
+and Go 1.5 support) and [rfink/gads](https://github.com/rfink/gads)
+(working on v201506 compatibility).
+
 
 ## installation
 
 ~~~
-go get github.com/emiddleton/gads
+	go get github.com/colinmutter/gads
 ~~~
 
 ## setup
@@ -19,6 +27,28 @@ setup a configuration file.
 2. https://developers.google.com/adwords/api/docs/signingup
 3. https://developers.google.com/adwords/api/docs/guides/authentication
 
+Currently, the package will look for these generated oauth json credentials
+in a file at ./config.json.  To override, supply the -gads_oauth flag and
+specity the file's location:
+
+    go run myproj.go --gads_oauth ~/my_oauth_creds.json
+
+## versions
+
+This project currently supports v201409 and v201506.  To select
+the appropriate version, import the specific package:
+
+	  import (
+	    gads "github.com/colinmutter/gads/v201506"
+	  )
+
+or
+
+	  import (
+	    gads "github.com/colinmutter/gads/v201409"
+	  )
+
+
 ## usage
 
 The package is comprised of services used to manipulate various
@@ -27,7 +57,7 @@ gads.Auth and parse it to the service initializer, then can call
 the service methods on the service object.
 
 ~~~ go
-     authConf, err := NewCredentials(context.TODO())
+     authConf, err := NewCredentials(oauth2.NoContext)
      campaignService := gads.NewCampaignService(&authConf.Auth)
 
      campaigns, totalCount, err := cs.Get(
@@ -51,3 +81,7 @@ See godoc for further documentation and examples.
 ## about
 
 Gads is developed by [Edward Middleton](https://blog.vortorus.net/)
+
+and supported by:   
+ - [Colin Mutter](http://github.com/colinmutter)   
+ - [Ryan Fink](http://github.com/rfink)
