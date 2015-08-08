@@ -12,8 +12,10 @@ import (
 )
 
 const (
-	rootUrl = "https://adwords.google.com/api/adwords/cm/"
-	baseUrl = "https://adwords.google.com/api/adwords/cm/v201506"
+	rootUrl    = "https://adwords.google.com/api/adwords/cm/"
+	baseUrl    = "https://adwords.google.com/api/adwords/cm/v201506"
+	rootMcmUrl = "https://adwords.google.com/api/adwords/mcm/"
+	baseMcmUrl = "https://adwords.google.com/api/adwords/mcm/v201506"
 )
 
 type ServiceUrl struct {
@@ -31,7 +33,7 @@ var (
 	configJson = flag.String("gads_oauth", "./config.json", "API credentials")
 
 	// Future use
-	//apiVersion = flag.String("v", "201506", "API version [201505, 201409]")
+	//apiVersion = flag.String("v", "201506", "API version [201506, 201409]")
 	// Endpoint
 	//baseUrl = rootUrl + "v" + *apiVersion
 
@@ -54,7 +56,7 @@ var (
 	constantDataServiceUrl          = ServiceUrl{baseUrl, "ConstantDataService"}
 	conversionTrackerServiceUrl     = ServiceUrl{baseUrl, "ConversionTrackerService"}
 	customerFeedServiceUrl          = ServiceUrl{baseUrl, "CustomerFeedService"}
-	customerServiceUrl              = ServiceUrl{baseUrl, "CustomerService"}
+	customerServiceUrl              = ServiceUrl{baseMcmUrl, "CustomerService"}
 	customerSyncServiceUrl          = ServiceUrl{baseUrl, "CustomerSyncService"}
 	dataServiceUrl                  = ServiceUrl{baseUrl, "DataService"}
 	experimentServiceUrl            = ServiceUrl{baseUrl, "ExperimentService"}
@@ -64,7 +66,7 @@ var (
 	geoLocationServiceUrl           = ServiceUrl{baseUrl, "GeoLocationService"}
 	labelServiceUrl                 = ServiceUrl{baseUrl, "LabelService"}
 	locationCriterionServiceUrl     = ServiceUrl{baseUrl, "LocationCriterionService"}
-	managedCustomerServiceUrl       = ServiceUrl{baseUrl, "ManagedCustomerService"}
+	managedCustomerServiceUrl       = ServiceUrl{baseMcmUrl, "ManagedCustomerService"}
 	mediaServiceUrl                 = ServiceUrl{baseUrl, "MediaService"}
 	mutateJobServiceUrl             = ServiceUrl{baseUrl, "Mutate_JOB_Service"}
 	offlineConversionFeedServiceUrl = ServiceUrl{baseUrl, "OfflineConversionFeedService"}
@@ -144,7 +146,7 @@ func (a *Auth) request(serviceUrl ServiceUrl, action string, body interface{}) (
 		XMLName          xml.Name
 		UserAgent        string `xml:"userAgent"`
 		DeveloperToken   string `xml:"developerToken"`
-		ClientCustomerId string `xml:"clientCustomerId"`
+		ClientCustomerId string `xml:"clientCustomerId,omitempty"`
 	}
 
 	type soapReqBody struct {
