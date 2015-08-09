@@ -175,7 +175,7 @@ func (a *Auth) request(serviceUrl ServiceUrl, action string, body interface{}) (
 		return []byte{}, err
 	}
 
-	// Added some logging/"ppor man's" debugging to inspect outbound SOAP requests
+	// Added some logging/"poor man's" debugging to inspect outbound SOAP requests
 	if level := os.Getenv("DEBUG"); level != "" {
 		fmt.Println(string(reqBody))
 	}
