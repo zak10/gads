@@ -5,6 +5,7 @@ import (
 	"golang.org/x/net/context"
 	"golang.org/x/oauth2"
 	"io/ioutil"
+	"time"
 )
 
 type AuthConfig struct {
@@ -15,7 +16,24 @@ type AuthConfig struct {
 	Auth         Auth               `json:"gads.Auth"`
 }
 
-func NewCredentialsFromFile(pathToFile string, ctx context.Context) (ac AuthConfig, err error) {
+type OAuthConfigArgs struct {
+	ClientID     string
+	ClientSecret string
+}
+
+type OAuthTokenArgs struct {
+	AccessToken  string
+	RefreshToken string
+}
+
+type Credentials struct {
+	Config OAuthConfigArgs
+	Token  OAuthTokenArgs
+	Auth   Auth
+}
+
+func NewCredentialsFromFile(pathToFile string) (ac AuthConfig, err error) {
+	ctx := context.TODO()
 	data, err := ioutil.ReadFile(pathToFile)
 	if err != nil {
 		return ac, err
@@ -29,8 +47,39 @@ func NewCredentialsFromFile(pathToFile string, ctx context.Context) (ac AuthConf
 	return ac, err
 }
 
-func NewCredentials(ctx context.Context) (ac AuthConfig, err error) {
-	return NewCredentialsFromFile(*configJson, ctx)
+func NewCredentialsFromParams(creds Credentials) (config AuthConfig, err error) {
+	var gcfg AuthConfig
+
+	expiresAt, _ := time.Parse(time.RFC3339, "2015-07-28T14:51:53.543430418-04:00")
+
+	// Create a token
+	gcfg.OAuth2Token = &oauth2.Token{
+		AccessToken:  creds.Token.AccessToken,
+		TokenType:    "Bearer",
+		RefreshToken: creds.Token.RefreshToken,
+		Expiry:       expiresAt,
+	}
+	ctx := context.TODO()
+
+	gcfg.OAuth2Config = &oauth2.Config{
+		ClientID:     creds.Config.ClientID,
+		ClientSecret: creds.Config.ClientSecret,
+		Scopes: []string{
+			"https://adwords.google.com/api/adwords",
+		},
+		Endpoint: oauth2.Endpoint{
+			AuthURL:  "https://accounts.google.com/o/oauth2/auth",
+			TokenURL: "https://accounts.google.com/o/oauth2/token",
+		},
+	}
+
+	gcfg.Auth = Auth{
+		CustomerId:     creds.Auth.CustomerId,
+		DeveloperToken: creds.Auth.DeveloperToken,
+		Client:         gcfg.OAuth2Config.Client(ctx, gcfg.OAuth2Token),
+	}
+
+	return gcfg, nil
 }
 
 // Save writes the contents of AuthConfig back to the JSON file it was

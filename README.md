@@ -35,17 +35,11 @@ specity the file's location:
 
 ## versions
 
-This project currently supports v201409 and v201506.  To select
+This project currently supports ~~v201409 and~~ v201506.  To select
 the appropriate version, import the specific package:
 
 	  import (
 	    gads "github.com/colinmutter/gads/v201506"
-	  )
-
-or
-
-	  import (
-	    gads "github.com/colinmutter/gads/v201409"
 	  )
 
 

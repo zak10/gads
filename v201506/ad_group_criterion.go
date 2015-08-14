@@ -310,6 +310,33 @@ func (s *AdGroupCriterionService) MutateLabel(adGroupCriterionLabelOperations Ad
 //
 //     https://developers.google.com/adwords/api/docs/reference/v201409/AdGroupCriterionService#query
 //
-func (s *AdGroupCriterionService) Query(query string) (adGroupCriterions AdGroupCriterions, err error) {
-	return adGroupCriterions, ERROR_NOT_YET_IMPLEMENTED
+func (s *AdGroupCriterionService) Query(query string) (adGroupCriterions AdGroupCriterions, totalCount int64, err error) {
+
+	respBody, err := s.Auth.request(
+		adGroupCriterionServiceUrl,
+		"query",
+		AWQLQuery{
+			XMLName: xml.Name{
+				Space: baseUrl,
+				Local: "query",
+			},
+			Query: query,
+		},
+	)
+
+	if err != nil {
+		return adGroupCriterions, totalCount, err
+	}
+
+	getResp := struct {
+		Size              int64             `xml:"rval>totalNumEntries"`
+		AdGroupCriterions AdGroupCriterions `xml:"rval>entries"`
+	}{}
+
+	err = xml.Unmarshal([]byte(respBody), &getResp)
+	if err != nil {
+		return adGroupCriterions, totalCount, err
+	}
+	return getResp.AdGroupCriterions, getResp.Size, err
+
 }

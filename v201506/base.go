@@ -3,7 +3,6 @@ package v201506
 import (
 	"bytes"
 	"encoding/xml"
-	"flag"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -29,13 +28,6 @@ var (
 )
 
 var (
-	// Configs
-	configJson = flag.String("gads_oauth", "./config.json", "API credentials")
-
-	// Future use
-	//apiVersion = flag.String("v", "201506", "API version [201506, 201409]")
-	// Endpoint
-	//baseUrl = rootUrl + "v" + *apiVersion
 
 	// service urls
 	adGroupAdServiceUrl             = ServiceUrl{baseUrl, "AdGroupAdService"}
@@ -76,12 +68,6 @@ var (
 	targetingIdeaServiceUrl         = ServiceUrl{baseUrl, "TargetingIdeaService"}
 	trafficEstimatorServiceUrl      = ServiceUrl{baseUrl, "TrafficEstimatorService"}
 )
-
-// init will parse any command line flags
-func init() {
-	flag.Parse()
-	// TODO debug log what configuration is being used
-}
 
 func (s ServiceUrl) String() string {
 	return s.Url + "/" + s.Name
@@ -175,11 +161,6 @@ func (a *Auth) request(serviceUrl ServiceUrl, action string, body interface{}) (
 		return []byte{}, err
 	}
 
-	// Added some logging/"poor man's" debugging to inspect outbound SOAP requests
-	if level := os.Getenv("DEBUG"); level != "" {
-		fmt.Println(string(reqBody))
-	}
-
 	req, err := http.NewRequest("POST", serviceUrl.String(), bytes.NewReader(reqBody))
 	req.Header.Add("Accept", "text/xml")
 	req.Header.Add("Accept", "multipart/*")
@@ -190,6 +171,12 @@ func (a *Auth) request(serviceUrl ServiceUrl, action string, body interface{}) (
 	if a.Testing != nil {
 		a.Testing.Logf("request ->\n%s\n%#v\n%s\n", req.URL.String(), req.Header, string(reqBody))
 	}
+
+	// Added some logging/"poor man's" debugging to inspect outbound SOAP requests
+	if level := os.Getenv("DEBUG"); level != "" {
+		fmt.Printf("request ->\n%s\n%#v\n%s\n", req.URL.String(), req.Header, string(reqBody))
+	}
+
 	resp, err := a.Client.Do(req)
 	if err != nil {
 		return []byte{}, err
