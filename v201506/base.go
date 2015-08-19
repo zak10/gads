@@ -125,7 +125,7 @@ func selectorError() (err error) {
 }
 
 func (a *Auth) request(serviceUrl ServiceUrl, action string, body interface{}) (respBody []byte, err error) {
-	fmt.Println(body)
+
 	type devToken struct {
 		XMLName xml.Name
 	}
