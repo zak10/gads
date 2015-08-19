@@ -153,8 +153,35 @@ func (s *LabelService) Mutate(labelOperations LabelOperations) (labels []Label, 
 //
 // Relevant documentation
 //
-//     https://developers.google.com/adwords/api/docs/reference/v201409/LabelService#query
+//     https://developers.google.com/adwords/api/docs/reference/v201506/LabelService#query
 //
 func (s *LabelService) Query(query string) (labels []Label, totalCount int64, err error) {
-	return labels, totalCount, ERROR_NOT_YET_IMPLEMENTED
+
+	respBody, err := s.Auth.request(
+		labelServiceUrl,
+		"query",
+		AWQLQuery{
+			XMLName: xml.Name{
+				Space: baseUrl,
+				Local: "query",
+			},
+			Query: query,
+		},
+	)
+
+	if err != nil {
+		return labels, totalCount, err
+	}
+
+	getResp := struct {
+		Size   int64   `xml:"rval>totalNumEntries"`
+		Labels []Label `xml:"rval>entries"`
+	}{}
+
+	err = xml.Unmarshal([]byte(respBody), &getResp)
+	if err != nil {
+		return labels, totalCount, err
+	}
+	return getResp.Labels, getResp.Size, err
+
 }
