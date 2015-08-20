@@ -55,6 +55,13 @@ type AdError struct {
 	Reason      string `xml:"reason"`
 }
 
+type LabelError struct {
+	FieldPath   string `xml:"fieldPath"`
+	Trigger     string `xml:"trigger"`
+	ErrorString string `xml:"errorString"`
+	Reason      string `xml:"reason"`
+}
+
 // if you exceed the quota given by google
 type RateExceededError struct {
 	RateName          string `xml:"rateName"`  // For example OperationsByMinute
@@ -104,6 +111,10 @@ func (aes *ApiExceptionFault) UnmarshalXML(dec *xml.Decoder, start xml.StartElem
 					aes.Errors = append(aes.Errors, e)
 				case "NotEmptyError":
 					e := NotEmptyError{}
+					dec.DecodeElement(&e, &start)
+					aes.Errors = append(aes.Errors, e)
+				case "LabelError":
+					e := LabelError{}
 					dec.DecodeElement(&e, &start)
 					aes.Errors = append(aes.Errors, e)
 				case "AdError":
