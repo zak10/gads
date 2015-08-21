@@ -17,6 +17,7 @@ type BiddableAdGroupCriterion struct {
 	DisapprovalReasons  []string `xml:"disapprovalReasons,omitempty"`
 	DestinationUrl      string   `xml:"destinationUrl,omitempty"`
 
+	// TODO add ExperimentData
 	FirstPageCpc *Cpc `xml:"firstPageCpc,omitempty"`
 	TopOfPageCpc *Cpc `xml:"topOfPageCpc,omitempty"`
 
@@ -24,6 +25,12 @@ type BiddableAdGroupCriterion struct {
 
 	BiddingStrategyConfiguration *BiddingStrategyConfiguration `xml:"biddingStrategyConfiguration,omitempty"`
 	BidModifier                  int64                         `xml:"bidModifier,omitempty"`
+
+	FinalUrls           []string         `xml:"finalUrls,omitempty"`
+	FinalMobileUrls     []string         `xml:"finalMobileUrls,omitempty"`
+	FinalAppUrls        []string         `xml:"finalAppUrls,omitempty"`
+	TrackingUrlTemplate string           `xml:"trackingUrlTemplate,omitempty"`
+	UrlCustomParameters CustomParameters `xml:"urlCustomParameters,omitempty"`
 }
 
 func (bagc BiddableAdGroupCriterion) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
@@ -112,6 +119,26 @@ func (bagc *BiddableAdGroupCriterion) UnmarshalXML(dec *xml.Decoder, start xml.S
 				}
 			case "bidModifier":
 				if err := dec.DecodeElement(&bagc.BidModifier, &start); err != nil {
+					return err
+				}
+			case "finalUrls":
+				if err := dec.DecodeElement(&bagc.FinalUrls, &start); err != nil {
+					return err
+				}
+			case "finalMobileUrls":
+				if err := dec.DecodeElement(&bagc.FinalMobileUrls, &start); err != nil {
+					return err
+				}
+			case "finalAppUrls":
+				if err := dec.DecodeElement(&bagc.FinalAppUrls, &start); err != nil {
+					return err
+				}
+			case "trackingUrlTemplate":
+				if err := dec.DecodeElement(&bagc.TrackingUrlTemplate, &start); err != nil {
+					return err
+				}
+			case "urlCustomParameters":
+				if err := dec.DecodeElement(&bagc.UrlCustomParameters, &start); err != nil {
 					return err
 				}
 			case "AdGroupCriterion.Type":
