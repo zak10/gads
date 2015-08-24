@@ -140,7 +140,7 @@ type Campaign struct {
 	BiddingStrategyConfiguration   *BiddingStrategyConfiguration   `xml:"biddingStrategyConfiguration"`
 	ForwardCompatibilityMap        *map[string]string              `xml:"forwardCompatibilityMap,omitempty"`
 	TrackingUrlTemplate            *string                         `xml:"trackingUrlTemplate"`
-	UrlCustomParameters            *CustomParameters               `xml:"urlCustomParametes"`
+	UrlCustomParameters            *CustomParameters               `xml:"urlCustomParameters"`
 	Errors                         []error                         `xml:"-"`
 }
 

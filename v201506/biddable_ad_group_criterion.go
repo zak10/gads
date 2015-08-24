@@ -42,18 +42,19 @@ func (bagc BiddableAdGroupCriterion) MarshalXML(e *xml.Encoder, start xml.StartE
 		},
 	)
 	e.EncodeToken(start)
-	e.EncodeElement(&bagc.AdGroupId, xml.StartElement{Name: xml.Name{"", "adGroupId"}})
+	e.EncodeElement(&bagc.AdGroupId, xml.StartElement{Name: xml.Name{baseUrl, "adGroupId"}})
 	criterionMarshalXML(bagc.Criterion, e)
 	if bagc.UserStatus != "" {
-		e.EncodeElement(&bagc.UserStatus, xml.StartElement{Name: xml.Name{"", "userStatus"}})
+		e.EncodeElement(&bagc.UserStatus, xml.StartElement{Name: xml.Name{baseUrl, "userStatus"}})
 	}
 	if bagc.DestinationUrl != "" {
-		e.EncodeElement(&bagc.DestinationUrl, xml.StartElement{Name: xml.Name{"", "destinationUrl"}})
+		e.EncodeElement(&bagc.DestinationUrl, xml.StartElement{Name: xml.Name{baseUrl, "destinationUrl"}})
 	}
-	e.EncodeElement(&bagc.BiddingStrategyConfiguration, xml.StartElement{Name: xml.Name{"", "biddingStrategyConfiguration"}})
+	e.EncodeElement(&bagc.BiddingStrategyConfiguration, xml.StartElement{Name: xml.Name{baseUrl, "biddingStrategyConfiguration"}})
 	if bagc.BidModifier != 0 {
-		e.EncodeElement(&bagc.BidModifier, xml.StartElement{Name: xml.Name{"", "bidModifier"}})
+		e.EncodeElement(&bagc.BidModifier, xml.StartElement{Name: xml.Name{baseUrl, "bidModifier"}})
 	}
+	e.EncodeElement(&bagc.UrlCustomParameters, xml.StartElement{Name: xml.Name{baseUrl, "urlCustomParameters"}})
 	e.EncodeToken(start.End())
 	return nil
 }

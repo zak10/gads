@@ -345,7 +345,7 @@ func criterionMarshalXML(c Criterion, e *xml.Encoder) error {
 		return fmt.Errorf("unknown criterion type %#v\n", t)
 	}
 	e.EncodeElement(&c, xml.StartElement{
-		xml.Name{"", "criterion"},
+		xml.Name{baseUrl, "criterion"},
 		[]xml.Attr{
 			xml.Attr{xml.Name{"http://www.w3.org/2001/XMLSchema-instance", "type"}, criterionType},
 		},
