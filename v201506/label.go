@@ -16,7 +16,7 @@ func NewLabelService(auth *Auth) *LabelService {
 type Label struct {
 	Type   string `xml:"http://www.w3.org/2001/XMLSchema-instance type,attr"`
 	Id     int64  `xml:"id,omitempty"`
-	Name   string `xml:"name"`
+	Name   string `xml:"name,omitempty"`
 	Status string `xml:"status,omitempty"`
 }
 
