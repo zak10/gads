@@ -31,6 +31,7 @@ type BiddableAdGroupCriterion struct {
 	FinalAppUrls        []string         `xml:"finalAppUrls,omitempty"`
 	TrackingUrlTemplate string           `xml:"trackingUrlTemplate,omitempty"`
 	UrlCustomParameters CustomParameters `xml:"urlCustomParameters,omitempty"`
+	Labels              []Label          `xml:"labels,omitempty"`
 }
 
 func (bagc BiddableAdGroupCriterion) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
@@ -140,6 +141,10 @@ func (bagc *BiddableAdGroupCriterion) UnmarshalXML(dec *xml.Decoder, start xml.S
 				}
 			case "urlCustomParameters":
 				if err := dec.DecodeElement(&bagc.UrlCustomParameters, &start); err != nil {
+					return err
+				}
+			case "labels":
+				if err := dec.DecodeElement(&bagc.Labels, &start); err != nil {
 					return err
 				}
 			case "AdGroupCriterion.Type":
