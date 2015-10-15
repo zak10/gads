@@ -33,6 +33,24 @@ type BulkMutateJobSelector struct {
 	Xsi_type  			string 		`xml:"http://www.w3.org/2001/XMLSchema-instance type,attr,omitempty"`
 }
 
+type SimpleMutateResponse struct {
+	Results 	[]Result			`xml:"rval>SimpleMutateResult>results"`
+	Errors 		[]EntityError 		`xml:"rval>SimpleMutateResult>errors"`
+}
+
+type Result struct {
+	AdGroup 				*AdGroup 				`xml:"AdGroup,omitempty"`
+	AdGroupAdLabel 			*AdGroupAdLabel 		`xml:"AdGroupAdLabel,omitempty"`
+	AdGroupCriterionLabel 	*AdGroupCriterionLabel 	`xml:"AdGroupCriterionLabel,omitempty"`
+	AdGroupLabel 			*AdGroupLabel 			`xml:"AdGroupLabel,omitempty"`
+	Budget 					*Budget 				`xml:"Budget,omitempty"`
+	CampaignCriterion 		*CampaignCriterion 		`xml:"CampaignCriterion,omitempty"`
+	CampaignLabel 			*CampaignLabel 			`xml:"CampaignLabel,omitempty"`
+	Campaign 				*Campaign 				`xml:"Campaign,omitempty"`
+	Label 					*Label 					`xml:"Label,omitempty"`
+	Media 					*Media 					`xml:"Media,omitempty"`
+}
+
 func NewMutateJobService(auth *Auth) *MutateJobService {
 	return &MutateJobService{Auth: *auth}
 }
@@ -100,6 +118,9 @@ func (s *MutateJobService) Mutate(jobOperations interface{}, policy *BulkMutateJ
 
 // Get queries mutation results of existing jobs
 func (s *MutateJobService) Get(jobSelector BulkMutateJobSelector) (mutateResp SimpleMutateJob, err error) {
+	
+	jobSelector.Xsi_type = "BulkMutateJobSelector"
+
 	respBody, err := s.Auth.request(
 		mutateJobServiceUrl,
 		"get",
@@ -110,6 +131,35 @@ func (s *MutateJobService) Get(jobSelector BulkMutateJobSelector) (mutateResp Si
 			XMLName: xml.Name{
 				Space: baseUrl,
 				Local: "get",
+			},
+			Sel: jobSelector,
+		},
+	)
+
+	if err != nil {
+		return mutateResp, err
+	}
+
+	err = xml.Unmarshal([]byte(respBody), &mutateResp)
+
+	return mutateResp, err
+}
+
+// Get mutation results of a completed job
+func (s *MutateJobService) GetResult(jobSelector BulkMutateJobSelector) (mutateResp SimpleMutateResponse, err error) {
+	
+	jobSelector.Xsi_type = "BulkMutateJobSelector"
+
+	respBody, err := s.Auth.request(
+		mutateJobServiceUrl,
+		"getResult",
+		struct {
+			XMLName xml.Name
+			Sel     BulkMutateJobSelector 	`xml:"selector"`
+		}{
+			XMLName: xml.Name{
+				Space: baseUrl,
+				Local: "getResult",
 			},
 			Sel: jobSelector,
 		},

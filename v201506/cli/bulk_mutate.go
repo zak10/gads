@@ -1,7 +1,7 @@
 package main
 
 import (
-	//"encoding/json"
+	"encoding/json"
 	"flag"
 	"crypto/rand"
 	"fmt"
@@ -13,7 +13,7 @@ import (
 var configJson = flag.String("oauth", "./oauth.json", "API credentials")
 
 // Your campaign ID should go here
-var campaignId int64 = 211793582
+var campaignId int64 = 1234567890
 
 func main() {
 	flag.Parse()
@@ -28,7 +28,8 @@ func main() {
 	// If you need to add prerequisites
 	//policy.PrerequisiteJobIds = append(policy.PrerequisiteJobIds, 123456)
 
-	ago := gads.AdGroupOperations{
+	// Creating AdGroups
+	/*ago := gads.AdGroupOperations{
 				"ADD": {
 					gads.AdGroup{
 						Name:       "test ad group " + rand_str(10),
@@ -41,7 +42,43 @@ func main() {
 						CampaignId: campaignId,
 					},
 				},
-			}
+			}*/
+
+	// Updating AdGroups
+	ago := gads.AdGroupOperations{
+			"SET": {
+				gads.AdGroup{
+					Id: 1234567890,
+					CampaignId: campaignId,
+					BiddingStrategyConfiguration: []gads.BiddingStrategyConfiguration{
+						gads.BiddingStrategyConfiguration{
+							StrategyType: "MANUAL_CPC",
+							Bids: []gads.Bid{
+								gads.Bid{
+									Type:   "CpcBid",
+									Amount: 2000000,
+								},
+							},
+						},
+					},
+				},
+				gads.AdGroup{
+					Id: 1234567890,
+					CampaignId: campaignId,
+					BiddingStrategyConfiguration: []gads.BiddingStrategyConfiguration{
+						gads.BiddingStrategyConfiguration{
+							StrategyType: "MANUAL_CPC",
+							Bids: []gads.Bid{
+								gads.Bid{
+									Type:   "CpcBid",
+									Amount: 2000000,
+								},
+							},
+						},
+					},
+				},
+			},
+		}
 
 	if resp, err := ms.Mutate(ago, policy); err == nil {
 		jobId := resp.Id
@@ -51,7 +88,7 @@ func main() {
 			// recheck every 5 seconds
 			time.Sleep(5 * time.Second)
 
-			jobSelector := gads.BulkMutateJobSelector{JobIds: []int64{jobId},Xsi_type: "BulkMutateJobSelector"}
+			jobSelector := gads.BulkMutateJobSelector{JobIds: []int64{jobId}}
 
 			result, err := ms.Get(jobSelector)
 
@@ -59,9 +96,26 @@ func main() {
 				panic(err)
 			}
 
-			fmt.Println(result)
-			break
+			if result.Status == "COMPLETED" {
+				break
+			}
+
+			if result.Status == "FAILED" {
+				// probably do something else here
+				panic("Job result failed")
+			}
 		}
+
+		jobSelector := gads.BulkMutateJobSelector{JobIds: []int64{jobId}}
+		result, err := ms.GetResult(jobSelector)
+
+		if err != nil {
+			panic(err)
+		}
+		jsonResult, _ := json.Marshal(result)
+		fmt.Println(result)
+		fmt.Println(string(jsonResult))
+
 	} else {
 		// handle err
 		panic(err)
