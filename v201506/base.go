@@ -60,7 +60,7 @@ var (
 	locationCriterionServiceUrl     = ServiceUrl{baseUrl, "LocationCriterionService"}
 	managedCustomerServiceUrl       = ServiceUrl{baseMcmUrl, "ManagedCustomerService"}
 	mediaServiceUrl                 = ServiceUrl{baseUrl, "MediaService"}
-	mutateJobServiceUrl             = ServiceUrl{baseUrl, "Mutate_JOB_Service"}
+	mutateJobServiceUrl             = ServiceUrl{baseUrl, "MutateJobService"}
 	offlineConversionFeedServiceUrl = ServiceUrl{baseUrl, "OfflineConversionFeedService"}
 	reportDefinitionServiceUrl      = ServiceUrl{baseUrl, "ReportDefinitionService"}
 	sharedCriterionServiceUrl       = ServiceUrl{baseUrl, "SharedCriterionService"}
