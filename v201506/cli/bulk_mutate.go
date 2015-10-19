@@ -45,7 +45,7 @@ func main() {
 			}*/
 
 	// Updating AdGroups
-	ago := gads.AdGroupOperations{
+	/*ago := gads.AdGroupOperations{
 			"SET": {
 				gads.AdGroup{
 					Id: 1234567890,
@@ -73,6 +73,39 @@ func main() {
 									Type:   "CpcBid",
 									Amount: 2000000,
 								},
+							},
+						},
+					},
+				},
+			},
+		}*/
+
+	ago := gads.AdGroupCriterionOperations{
+			"SET": {
+				gads.BiddableAdGroupCriterion{
+					AdGroupId: 1234567890,
+					Criterion: gads.KeywordCriterion{
+						Id: 1234567890,
+					},
+					BiddingStrategyConfiguration: &gads.BiddingStrategyConfiguration{
+						Bids: []gads.Bid{
+							gads.Bid{
+								Type:   "CpcBid",
+								Amount: 3000000,
+							},
+						},
+					},
+				},
+				gads.BiddableAdGroupCriterion{
+					AdGroupId: 1234567890,
+					Criterion: gads.KeywordCriterion{
+						Id: 1234567890,
+					},
+					BiddingStrategyConfiguration: &gads.BiddingStrategyConfiguration{
+						Bids: []gads.Bid{
+							gads.Bid{
+								Type:   "CpcBid",
+								Amount: 2000000,
 							},
 						},
 					},
