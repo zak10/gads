@@ -41,6 +41,7 @@ type SimpleMutateResponse struct {
 type Result struct {
 	AdGroup 				*AdGroup 				`xml:"AdGroup,omitempty"`
 	AdGroupAdLabel 			*AdGroupAdLabel 		`xml:"AdGroupAdLabel,omitempty"`
+	AdGroupCriterion 		*AdGroupCriterions 		`xml:"AdGroupCriterion,omitempty"`
 	AdGroupCriterionLabel 	*AdGroupCriterionLabel 	`xml:"AdGroupCriterionLabel,omitempty"`
 	AdGroupLabel 			*AdGroupLabel 			`xml:"AdGroupLabel,omitempty"`
 	Budget 					*Budget 				`xml:"Budget,omitempty"`
