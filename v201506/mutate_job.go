@@ -1,7 +1,6 @@
 package v201506
 
 import (
-	//"fmt"
 	"reflect"
 	"strings"
 	"encoding/xml"
@@ -23,7 +22,7 @@ type Operation struct {
 }
 
 type SimpleMutateJob struct {
-	Id 		int64	`xml:"rval>id"`
+	Id 		int64	`xml:"rval>id" json:",string"`
 	Status 	string 	`xml:"rval>status"`
 }
 
