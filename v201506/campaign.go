@@ -361,5 +361,31 @@ func (s *CampaignService) MutateLabel(campaignLabelOperations CampaignLabelOpera
 //     https://developers.google.com/adwords/api/docs/reference/v201409/CampaignService#query
 //
 func (s *CampaignService) Query(query string) (campaigns []Campaign, totalCount int64, err error) {
-	return campaigns, totalCount, ERROR_NOT_YET_IMPLEMENTED
+	
+	respBody, err := s.Auth.request(
+		campaignServiceUrl,
+		"query",
+		AWQLQuery{
+			XMLName: xml.Name{
+				Space: baseUrl,
+				Local: "query",
+			},
+			Query: query,
+		},
+	)
+
+	if err != nil {
+		return campaigns, totalCount, err
+	}
+
+	getResp := struct {
+		Size     int64     `xml:"rval>totalNumEntries"`
+		Campaigns []Campaign `xml:"rval>entries"`
+	}{}
+
+	err = xml.Unmarshal([]byte(respBody), &getResp)
+	if err != nil {
+		return campaigns, totalCount, err
+	}
+	return getResp.Campaigns, getResp.Size, err
 }
