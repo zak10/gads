@@ -1,19 +1,19 @@
 package main
 
 import (
-	//"encoding/json"
 	"flag"
 	"crypto/rand"
 	"fmt"
 	gads "github.com/bbachtel/gads/v201509"
 	"log"
-	//"time"
+	"time"
+	"strconv"
 )
 
 var configJson = flag.String("oauth", "./oauth.json", "API credentials")
 
 // Your campaign ID should go here
-var campaignId int64 = 211793582
+var campaignId int64 = 1234567890
 
 func main() {
 	flag.Parse()
@@ -21,22 +21,20 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	// Batch Job
 	bs := gads.NewBatchJobService(&config.Auth)
-
-	// If you need to add prerequisites
-	//policy.PrerequisiteJobIds = append(policy.PrerequisiteJobIds, 123456)
 
 	// Creating AdGroups
 	ago := gads.AdGroupOperations{
 				"ADD": {
 					gads.AdGroup{
-						Name:       "test brianss ad group " + rand_str(10),
+						Name:       "test ad group " + rand_str(10),
 						Status:     "PAUSED",
 						CampaignId: campaignId,
 					},
 					gads.AdGroup{
-						Name:       "test brianss ad group " + rand_str(10),
+						Name:       "test ad group " + rand_str(10),
 						Status:     "PAUSED",
 						CampaignId: campaignId,
 					},
@@ -45,75 +43,6 @@ func main() {
 
 			var operations []interface{}
 			operations = append(operations, ago)
-
-	// Updating AdGroups
-	/*ago := gads.AdGroupOperations{
-			"SET": {
-				gads.AdGroup{
-					Id: 1234567890,
-					CampaignId: campaignId,
-					BiddingStrategyConfiguration: []gads.BiddingStrategyConfiguration{
-						gads.BiddingStrategyConfiguration{
-							StrategyType: "MANUAL_CPC",
-							Bids: []gads.Bid{
-								gads.Bid{
-									Type:   "CpcBid",
-									Amount: 2000000,
-								},
-							},
-						},
-					},
-				},
-				gads.AdGroup{
-					Id: 1234567890,
-					CampaignId: campaignId,
-					BiddingStrategyConfiguration: []gads.BiddingStrategyConfiguration{
-						gads.BiddingStrategyConfiguration{
-							StrategyType: "MANUAL_CPC",
-							Bids: []gads.Bid{
-								gads.Bid{
-									Type:   "CpcBid",
-									Amount: 2000000,
-								},
-							},
-						},
-					},
-				},
-			},
-		}*/
-
-	/*ago := gads.AdGroupCriterionOperations{
-			"SET": {
-				gads.BiddableAdGroupCriterion{
-					AdGroupId: 1234567890,
-					Criterion: gads.KeywordCriterion{
-						Id: 1234567890,
-					},
-					BiddingStrategyConfiguration: &gads.BiddingStrategyConfiguration{
-						Bids: []gads.Bid{
-							gads.Bid{
-								Type:   "CpcBid",
-								Amount: 3000000,
-							},
-						},
-					},
-				},
-				gads.BiddableAdGroupCriterion{
-					AdGroupId: 1234567890,
-					Criterion: gads.KeywordCriterion{
-						Id: 1234567890,
-					},
-					BiddingStrategyConfiguration: &gads.BiddingStrategyConfiguration{
-						Bids: []gads.Bid{
-							gads.Bid{
-								Type:   "CpcBid",
-								Amount: 2000000,
-							},
-						},
-					},
-				},
-			},
-		}*/
 
 	bjo := gads.BatchJobOperations{
 		BatchJobOperations: []gads.BatchJobOperation{
@@ -125,12 +54,58 @@ func main() {
 	}
 
 	if resp, err := bs.Mutate(bjo); err == nil {
-		jobId := resp[0].UploadUrl
-		fmt.Println(jobId)
 		
 		bjh := gads.NewBatchJobHelper(&config.Auth)
-		bjh.UploadBatchJobOperations(operations, *resp[0].UploadUrl)
+		err = bjh.UploadBatchJobOperations(operations, *resp[0].UploadUrl)
 
+		if(err != nil){
+			panic(err)
+		}
+
+		jobId := resp[0].Id
+		batchJobs := gads.BatchJobPage{}
+
+		// loop
+		for {
+			// recheck every 5 seconds
+			time.Sleep(5 * time.Second)
+			selector := gads.Selector{
+				Fields: []string{
+					"Id",
+					"Status",
+					"DownloadUrl",
+					"ProcessingErrors",
+					"ProgressStats",
+				},
+				Predicates: []gads.Predicate{
+					{"Id", "EQUALS", []string{strconv.FormatInt(jobId, 10)}},
+				},
+			}
+
+			// more than likely you'll want to have some logic to loop through these if you have multiple batch jobs, but since only one we just want to grab the first one
+			batchJobs, err = bs.Get(selector)
+
+			if(err != nil){
+				panic(err)
+			}
+
+			if batchJobs.BatchJobs[0].Status == "DONE" {
+				break
+			} else if batchJobs.BatchJobs[0].Status == "CANCELED" {
+				panic("Job was canceled")
+			}
+		}
+
+		if batchJobs.BatchJobs[0].DownloadUrl.Url != ""{
+			// get the job
+			mutateResult, err := bjh.DownloadBatchJob(*batchJobs.BatchJobs[0].DownloadUrl)
+
+			if(err != nil){
+				panic(err)
+			}
+
+			fmt.Println(mutateResult)
+		}
 	} else {
 		// handle err
 		panic(err)

@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	//"os"
+	"os"
 	"testing"
 )
 
@@ -71,13 +71,7 @@ var (
 )
 
 func (s ServiceUrl) String() string {
-	//if(s.Name != "") {
-		return s.Url + "/" + s.Name
-	//} else {
-		// need this for new batch job helper that has dynamic url and adding "/" breaks things
-		//return s.Url
-	//}
-	
+	return s.Url + "/" + s.Name
 }
 
 type Auth struct {
@@ -181,9 +175,9 @@ func (a *Auth) request(serviceUrl ServiceUrl, action string, body interface{}) (
 	}
 
 	// Added some logging/"poor man's" debugging to inspect outbound SOAP requests
-	//if level := os.Getenv("DEBUG"); level != "" {
+	if level := os.Getenv("DEBUG"); level != "" {
 		fmt.Printf("request ->\n%s\n%#v\n%s\n", req.URL.String(), req.Header, string(reqBody))
-	//}
+	}
 
 	resp, err := a.Client.Do(req)
 	if err != nil {
@@ -193,9 +187,9 @@ func (a *Auth) request(serviceUrl ServiceUrl, action string, body interface{}) (
 	respBody, err = ioutil.ReadAll(resp.Body)
 
 	// Added some logging/"poor man's" debugging to inspect outbound SOAP requests
-	//if level := os.Getenv("DEBUG"); level != "" {
+	if level := os.Getenv("DEBUG"); level != "" {
 		fmt.Printf("response ->\n%s\n", string(respBody))
-	//}
+	}
 
 	if a.Testing != nil {
 		a.Testing.Logf("respBody ->\n%s\n%s\n", string(respBody), resp.Status)

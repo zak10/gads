@@ -2,6 +2,7 @@ package v201509
 
 import (
 	"encoding/xml"
+	"fmt"
 )
 
 type BatchJobService struct {
@@ -9,7 +10,8 @@ type BatchJobService struct {
 }
 
 type BatchJobPage struct {
-
+	TotalNumEntries 	int 		`xml:"rval>totalNumEntries"`
+	BatchJobs 			[]BatchJob 	`xml:"rval>entries"`
 }
 
 type BatchJobOperations struct {
@@ -49,14 +51,80 @@ type ProgressStats struct {
 	NumResultsWritten 			int64 	`xml:"numResultsWritten" json:",string"`
 }
 
+type MutateResults struct {
+	Result 		MutateResult 	`xml:"result"`
+	ErrorList 	[]EntityError 	`xml:"errorList"`
+	Index 		int 			`xml:"index"`
+}
+
+type MutateResult interface{}
+
 func NewBatchJobService(auth *Auth) *BatchJobService {
 	return &BatchJobService{Auth: *auth}
 }
 
-func (s *BatchJobService) Get(selector Selector) (batchJobPage BatchJobPage) {
-	return batchJobPage
+// Get queries the status of existing BatchJobs
+//
+//	Example
+//
+//	batchJobs, err := batchJobService.Get(
+// 		gads.Selector{
+//			Fields: []string{
+//				"Id",
+//				"Status",
+//				"DownloadUrl",
+//				"ProcessingErrors",
+//				"ProgressStats",
+//			},
+//			Predicates: []gads.Predicate{
+//				{"Id", "EQUALS", []string{strconv.FormatInt(jobId, 10)}},
+//			},
+//		},
+//	)
+//
+// 	https://developers.google.com/adwords/api/docs/reference/v201509/BatchJobService#get
+func (s *BatchJobService) Get(selector Selector) (batchJobPage BatchJobPage, err error) {
+
+	selector.XMLName = xml.Name{baseUrl, "selector"}
+	respBody, err := s.Auth.request(
+		batchJobServiceUrl,
+		"get",
+		struct {
+			XMLName xml.Name
+			Sel     Selector
+		}{
+			XMLName: xml.Name{
+				Space: baseUrl,
+				Local: "get",
+			},
+			Sel: selector,
+		},
+	)
+	if err != nil {
+		return batchJobPage, err
+	}
+	
+	err = xml.Unmarshal([]byte(respBody), &batchJobPage)
+	
+	return batchJobPage, err
 }
 
+// Mutate allows you to create or update a BatchJob
+//
+//	Example
+//
+//	resp, err := batchJobService.Mutate(
+// 		gads.BatchJobOperations{
+//			BatchJobOperations: []gads.BatchJobOperation{
+//				gads.BatchJobOperation{
+//					Operator: "ADD",
+//					Operand: gads.BatchJob{},
+//				},
+//			},
+//		},
+//	)
+//
+// 	https://developers.google.com/adwords/api/docs/reference/v201509/BatchJobService#mutate
 func (s *BatchJobService) Mutate(batchJobOperations BatchJobOperations) (batchJobs []BatchJob, err error) {
 	
 	mutation := struct {
@@ -85,4 +153,101 @@ func (s *BatchJobService) Mutate(batchJobOperations BatchJobOperations) (batchJo
 
 func (s *BatchJobService) Query() {
 	
+}
+
+func (mr *MutateResults) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) (err error) {
+	for token, err := dec.Token(); err == nil; token, err = dec.Token() {
+		if err != nil {
+			return err
+		}
+		switch start := token.(type) {
+		case xml.StartElement:
+			tag := start.Name.Local
+			switch tag {
+			case "index":
+				if err := dec.DecodeElement(&mr.Index, &start); err != nil {
+					return err
+				}
+			case "errorList":
+				if err := dec.DecodeElement(&mr.ErrorList, &start); err != nil {
+					return err
+				}
+			case "AdGroup":
+				ag := AdGroup{}
+				err := dec.DecodeElement(&ag, &start)
+				if err != nil {
+					return err
+				}
+				mr.Result = ag
+			case "AdGroupAd":
+				aga := AdGroupAds{}
+				err := dec.DecodeElement(&aga, &start)
+				if err != nil {
+					return err
+				}
+				mr.Result = aga
+			case "AdGroupAdLabel":
+				agal := AdGroupAdLabel{}
+				err := dec.DecodeElement(&agal, &start)
+				if err != nil {
+					return err
+				}
+				mr.Result = agal
+			case "AdGroupCriterion":
+				agc := AdGroupCriterions{}
+				err := dec.DecodeElement(&agc, &start)
+				if err != nil {
+					return err
+				}
+				mr.Result = agc
+			case "AdGroupCriterionLabel":
+				agcl := AdGroupCriterionLabel{}
+				err := dec.DecodeElement(&agcl, &start)
+				if err != nil {
+					return err
+				}
+				mr.Result = agcl
+			case "AdGroupLabel":
+				agl := AdGroupLabel{}
+				err := dec.DecodeElement(&agl, &start)
+				if err != nil {
+					return err
+				}
+				mr.Result = agl
+			case "Budget":
+				b := Budget{}
+				err := dec.DecodeElement(&b, &start)
+				if err != nil {
+					return err
+				}
+				mr.Result = b
+			case "Campaign":
+				c := Campaign{}
+				err := dec.DecodeElement(&c, &start)
+				if err != nil {
+					return err
+				}
+				mr.Result = c
+			case "CampaignCriterion":
+				cc := CampaignCriterion{}
+				err := dec.DecodeElement(&cc, &start)
+				if err != nil {
+					return err
+				}
+				mr.Result = cc
+			case "CampaignLabel":
+				cl := CampaignLabel{}
+				err := dec.DecodeElement(&cl, &start)
+				if err != nil {
+					return err
+				}
+				mr.Result = cl
+			case "result":
+				break
+			default:
+				return fmt.Errorf("unknown MutateResults field %s", tag)
+			}
+		}
+	}
+	return err
 }
