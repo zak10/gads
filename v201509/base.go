@@ -11,10 +11,12 @@ import (
 )
 
 const (
-	rootUrl    = "https://adwords.google.com/api/adwords/cm/"
-	baseUrl    = "https://adwords.google.com/api/adwords/cm/v201509"
-	rootMcmUrl = "https://adwords.google.com/api/adwords/mcm/"
-	baseMcmUrl = "https://adwords.google.com/api/adwords/mcm/v201509"
+	rootUrl    				= "https://adwords.google.com/api/adwords/cm/"
+	baseUrl    				= "https://adwords.google.com/api/adwords/cm/v201509"
+	rootMcmUrl 				= "https://adwords.google.com/api/adwords/mcm/"
+	baseMcmUrl 				= "https://adwords.google.com/api/adwords/mcm/v201509"
+	rootRemarketingUrl    	= "https://adwords.google.com/api/adwords/rm/"
+	baseRemarketingUrl    	= "https://adwords.google.com/api/adwords/rm/v201509"
 )
 
 type ServiceUrl struct {
@@ -36,7 +38,7 @@ var (
 	adGroupFeedServiceUrl           = ServiceUrl{baseUrl, "AdGroupFeedService"}
 	adGroupServiceUrl               = ServiceUrl{baseUrl, "AdGroupService"}
 	adParamServiceUrl               = ServiceUrl{baseUrl, "AdParamService"}
-	adwordsUserListServiceUrl       = ServiceUrl{baseUrl, "AdwordsUserListService"}
+	adwordsUserListServiceUrl       = ServiceUrl{baseRemarketingUrl, "AdwordsUserListService"}
 	batchJobServiceUrl 				= ServiceUrl{baseUrl, "BatchJobService"}
 	biddingStrategyServiceUrl       = ServiceUrl{baseUrl, "BiddingStrategyService"}
 	budgetOrderServiceUrl           = ServiceUrl{baseUrl, "BudgetOrderService"}

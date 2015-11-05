@@ -16,7 +16,7 @@ type BulkMutateJobPolicy struct {
 }
 
 type Operation struct {
-	Operator   	string   		`xml:"operator"`
+	Operator   	string   		`xml:"https://adwords.google.com/api/adwords/cm/v201509 operator"`
 	Operand 	interface{}		`xml:"operand"`
 	Xsi_type  	string 			`xml:"http://www.w3.org/2001/XMLSchema-instance type,attr,omitempty"`
 }
