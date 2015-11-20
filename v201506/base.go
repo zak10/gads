@@ -77,6 +77,7 @@ type Auth struct {
 	CustomerId     string
 	DeveloperToken string
 	UserAgent      string
+	PartialFailure bool
 	Testing        *testing.T   `json:"-"`
 	Client         *http.Client `json:"-"`
 }
@@ -134,6 +135,7 @@ func (a *Auth) request(serviceUrl ServiceUrl, action string, body interface{}) (
 		UserAgent        string `xml:"userAgent"`
 		DeveloperToken   string `xml:"developerToken"`
 		ClientCustomerId string `xml:"clientCustomerId,omitempty"`
+		PartialFailure	 bool 	`xml:"partialFailure,omitempty"` 
 	}
 
 	type soapReqBody struct {
@@ -146,15 +148,22 @@ func (a *Auth) request(serviceUrl ServiceUrl, action string, body interface{}) (
 		Body    soapReqBody   `xml:"http://schemas.xmlsoap.org/soap/envelope/ Body"`
 	}
 
-	reqBody, err := xml.MarshalIndent(
-		soapReqEnvelope{
-			XMLName: xml.Name{"http://schemas.xmlsoap.org/soap/envelope/", "Envelope"},
-			Header: soapReqHeader{
+	reqHead := soapReqHeader{
 				XMLName:          xml.Name{serviceUrl.Url, "RequestHeader"},
 				UserAgent:        a.UserAgent,
 				DeveloperToken:   a.DeveloperToken,
 				ClientCustomerId: a.CustomerId,
-			},
+			}
+
+	// https://developers.google.com/adwords/api/docs/guides/partial-failure
+	if a.PartialFailure {
+		reqHead.PartialFailure = true
+	}
+
+	reqBody, err := xml.MarshalIndent(
+		soapReqEnvelope{
+			XMLName: xml.Name{"http://schemas.xmlsoap.org/soap/envelope/", "Envelope"},
+			Header: reqHead,
 			Body: soapReqBody{body},
 		},
 		"  ", "  ")
