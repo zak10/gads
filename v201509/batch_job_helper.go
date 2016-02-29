@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"io/ioutil"
 	"errors"
+	"os"
+	"fmt"
 )
 
 type BatchJobHelper struct {
@@ -95,15 +97,21 @@ func (s *BatchJobHelper) UploadBatchJobOperations(jobOperations []interface{}, u
 			return err
 		}
 
-		// resp seems to only return 200's and there is no error handling, but if we happen to get invalid status lets try to do something with it
-		if resp.StatusCode != 200 {
-			respBody, err := ioutil.ReadAll(resp.Body)
-			if err != nil {
-				return err
-			}
-			return errors.New("Non-200 response returned Body: " + string(respBody))
+		respBody, err := ioutil.ReadAll(resp.Body)
+
+		if err != nil {
+			return err
 		}
 
+		// Added some logging/"poor man's" debugging to inspect outbound SOAP requests
+		if level := os.Getenv("DEBUG"); level != "" {
+			fmt.Printf("response ->\n%s\n", string(respBody))
+		}
+
+		// resp seems to only return 200's and there is no error handling, but if we happen to get invalid status lets try to do something with it
+		if resp.StatusCode != 200 {	
+			return errors.New("Non-200 response returned Body: " + string(respBody))
+		}
 	}
 
 	return err
@@ -124,6 +132,11 @@ func (s *BatchJobHelper) DownloadBatchJob(url TemporaryUrl) (mutateResults []Mut
 	}
 
 	respBody, err := ioutil.ReadAll(resp.Body)
+
+	// Added some logging/"poor man's" debugging to inspect outbound SOAP requests
+	if level := os.Getenv("DEBUG"); level != "" {
+		fmt.Printf("response ->\n%s\n", string(respBody))
+	}
 
 	soapResp := struct {
 		MutateResults    []MutateResults   `xml:"rval"`
