@@ -109,7 +109,7 @@ func (s *BatchJobHelper) UploadBatchJobOperations(jobOperations []interface{}, u
 		}
 
 		// resp seems to only return 200's and there is no error handling, but if we happen to get invalid status lets try to do something with it
-		if resp.StatusCode != 200 {l	
+		if resp.StatusCode != 200 {	
 			return errors.New("Non-200 response returned Body: " + string(respBody))
 		}
 	}
