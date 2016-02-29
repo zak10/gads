@@ -53,8 +53,12 @@ type ProgressStats struct {
 
 type MutateResults struct {
 	Result 		MutateResult 	`xml:"result"`
-	ErrorList 	[]EntityError 	`xml:"errorList"`
+	ErrorList 	[]MutateErrors 	`xml:"errorList"`
 	Index 		int 			`xml:"index"`
+}
+
+type MutateErrors struct {
+	Errors 		EntityError 	`xml:"errors"`
 }
 
 type MutateResult interface{}

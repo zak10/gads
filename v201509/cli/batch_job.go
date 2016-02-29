@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"crypto/rand"
 	"fmt"
@@ -25,6 +26,58 @@ func main() {
 	// Batch Job
 	bs := gads.NewBatchJobService(&config.Auth)
 
+	/*ago := gads.AdGroupCriterionOperations{
+			"SET":	gads.AdGroupCriterions {
+						gads.BiddableAdGroupCriterion{
+							AdGroupId: 11400713462,
+							Criterion: gads.KeywordCriterion{
+								Id: 47652524966,
+							},
+							BiddingStrategyConfiguration: &gads.BiddingStrategyConfiguration{
+								Bids: []gads.Bid{
+									gads.Bid{
+										Type:   "CpcBid",
+										Amount: 5372200,
+									},
+								},
+							},
+							UrlCustomParameters: gads.CustomParameters{
+								CustomParameters: []gads.CustomParameter{
+									gads.CustomParameter{
+										Key:      "foo",
+										Value:    "bar",
+										IsRemove: false,
+									},
+								},
+								DoReplace: false,
+							},
+						},
+						gads.BiddableAdGroupCriterion{
+							AdGroupId: 11400713462,
+							Criterion: gads.KeywordCriterion{
+								Id: 47652524366,
+							},
+							BiddingStrategyConfiguration: &gads.BiddingStrategyConfiguration{
+								Bids: []gads.Bid{
+									gads.Bid{
+										Type:   "CpcBid",
+										Amount: 5372200,
+									},
+								},
+							},
+							UrlCustomParameters: gads.CustomParameters{
+								CustomParameters: []gads.CustomParameter{
+									gads.CustomParameter{
+										Key:      "foo",
+										Value:    "bar",
+										IsRemove: false,
+									},
+								},
+								DoReplace: false,
+							},
+						},
+					},
+			}*/
 	// Creating AdGroups
 	ago := gads.AdGroupOperations{
 				"ADD": {
@@ -105,6 +158,9 @@ func main() {
 			}
 
 			fmt.Println(mutateResult)
+			jsonResult, _ := json.Marshal(mutateResult)
+		
+			fmt.Println(string(jsonResult))
 		}
 	} else {
 		// handle err
