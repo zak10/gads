@@ -11,12 +11,15 @@ import (
 )
 
 const (
-	rootUrl    				= "https://adwords.google.com/api/adwords/cm/"
-	baseUrl    				= "https://adwords.google.com/api/adwords/cm/v201509"
-	rootMcmUrl 				= "https://adwords.google.com/api/adwords/mcm/"
-	baseMcmUrl 				= "https://adwords.google.com/api/adwords/mcm/v201509"
-	rootRemarketingUrl    	= "https://adwords.google.com/api/adwords/rm/"
-	baseRemarketingUrl    	= "https://adwords.google.com/api/adwords/rm/v201509"
+	version               = "v201509"
+	rootUrl               = "https://adwords.google.com/api/adwords/cm/"
+	baseUrl               = "https://adwords.google.com/api/adwords/cm/" + version
+	rootMcmUrl            = "https://adwords.google.com/api/adwords/mcm/"
+	baseMcmUrl            = "https://adwords.google.com/api/adwords/mcm/" + version
+	rootRemarketingUrl    = "https://adwords.google.com/api/adwords/rm/"
+	baseRemarketingUrl    = "https://adwords.google.com/api/adwords/rm/" + version
+	rootReportDownloadUrl = "https://adwords.google.com/api/adwords/reportdownload/"
+	baseReportDownloadUrl = "https://adwords.google.com/api/adwords/reportdownload/" + version
 )
 
 type ServiceUrl struct {
@@ -39,7 +42,7 @@ var (
 	adGroupServiceUrl               = ServiceUrl{baseUrl, "AdGroupService"}
 	adParamServiceUrl               = ServiceUrl{baseUrl, "AdParamService"}
 	adwordsUserListServiceUrl       = ServiceUrl{baseRemarketingUrl, "AdwordsUserListService"}
-	batchJobServiceUrl 				= ServiceUrl{baseUrl, "BatchJobService"}
+	batchJobServiceUrl              = ServiceUrl{baseUrl, "BatchJobService"}
 	biddingStrategyServiceUrl       = ServiceUrl{baseUrl, "BiddingStrategyService"}
 	budgetOrderServiceUrl           = ServiceUrl{baseUrl, "BudgetOrderService"}
 	budgetServiceUrl                = ServiceUrl{baseUrl, "BudgetService"}
@@ -66,6 +69,7 @@ var (
 	mutateJobServiceUrl             = ServiceUrl{baseUrl, "MutateJobService"}
 	offlineConversionFeedServiceUrl = ServiceUrl{baseUrl, "OfflineConversionFeedService"}
 	reportDefinitionServiceUrl      = ServiceUrl{baseUrl, "ReportDefinitionService"}
+	reportDownloadServiceUrl        = ServiceUrl{baseReportDownloadUrl, ""}
 	sharedCriterionServiceUrl       = ServiceUrl{baseUrl, "SharedCriterionService"}
 	sharedSetServiceUrl             = ServiceUrl{baseUrl, "SharedSetService"}
 	targetingIdeaServiceUrl         = ServiceUrl{baseUrl, "TargetingIdeaService"}
@@ -73,7 +77,10 @@ var (
 )
 
 func (s ServiceUrl) String() string {
-	return s.Url + "/" + s.Name
+	if s.Name != "" {
+		return s.Url + "/" + s.Name
+	}
+	return s.Url
 }
 
 type Auth struct {
@@ -138,7 +145,7 @@ func (a *Auth) request(serviceUrl ServiceUrl, action string, body interface{}) (
 		UserAgent        string `xml:"userAgent"`
 		DeveloperToken   string `xml:"developerToken"`
 		ClientCustomerId string `xml:"clientCustomerId,omitempty"`
-		PartialFailure	 bool 	`xml:"partialFailure,omitempty"` 
+		PartialFailure   bool   `xml:"partialFailure,omitempty"`
 	}
 
 	type soapReqBody struct {
@@ -152,11 +159,11 @@ func (a *Auth) request(serviceUrl ServiceUrl, action string, body interface{}) (
 	}
 
 	reqHead := soapReqHeader{
-				XMLName:          xml.Name{serviceUrl.Url, "RequestHeader"},
-				UserAgent:        a.UserAgent,
-				DeveloperToken:   a.DeveloperToken,
-				ClientCustomerId: a.CustomerId,
-			}
+		XMLName:          xml.Name{serviceUrl.Url, "RequestHeader"},
+		UserAgent:        a.UserAgent,
+		DeveloperToken:   a.DeveloperToken,
+		ClientCustomerId: a.CustomerId,
+	}
 
 	// https://developers.google.com/adwords/api/docs/guides/partial-failure
 	if a.PartialFailure {
@@ -166,8 +173,8 @@ func (a *Auth) request(serviceUrl ServiceUrl, action string, body interface{}) (
 	reqBody, err := xml.MarshalIndent(
 		soapReqEnvelope{
 			XMLName: xml.Name{"http://schemas.xmlsoap.org/soap/envelope/", "Envelope"},
-			Header: reqHead,
-			Body: soapReqBody{body},
+			Header:  reqHead,
+			Body:    soapReqBody{body},
 		},
 		"  ", "  ")
 	if err != nil {

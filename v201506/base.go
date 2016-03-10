@@ -11,10 +11,13 @@ import (
 )
 
 const (
-	rootUrl    = "https://adwords.google.com/api/adwords/cm/"
-	baseUrl    = "https://adwords.google.com/api/adwords/cm/v201506"
-	rootMcmUrl = "https://adwords.google.com/api/adwords/mcm/"
-	baseMcmUrl = "https://adwords.google.com/api/adwords/mcm/v201506"
+	version               = "v201506"
+	rootUrl               = "https://adwords.google.com/api/adwords/cm/"
+	baseUrl               = "https://adwords.google.com/api/adwords/cm/" + version
+	rootMcmUrl            = "https://adwords.google.com/api/adwords/mcm/"
+	baseMcmUrl            = "https://adwords.google.com/api/adwords/mcm/" + version
+	rootReportDownloadUrl = "https://adwords.google.com/api/adwords/reportdownload/"
+	baseReportDownloadUrl = "https://adwords.google.com/api/adwords/reportdownload/" + version
 )
 
 type ServiceUrl struct {
@@ -63,6 +66,7 @@ var (
 	mutateJobServiceUrl             = ServiceUrl{baseUrl, "MutateJobService"}
 	offlineConversionFeedServiceUrl = ServiceUrl{baseUrl, "OfflineConversionFeedService"}
 	reportDefinitionServiceUrl      = ServiceUrl{baseUrl, "ReportDefinitionService"}
+	reportDownloadServiceUrl        = ServiceUrl{baseReportDownloadUrl, ""}
 	sharedCriterionServiceUrl       = ServiceUrl{baseUrl, "SharedCriterionService"}
 	sharedSetServiceUrl             = ServiceUrl{baseUrl, "SharedSetService"}
 	targetingIdeaServiceUrl         = ServiceUrl{baseUrl, "TargetingIdeaService"}
@@ -70,7 +74,10 @@ var (
 )
 
 func (s ServiceUrl) String() string {
-	return s.Url + "/" + s.Name
+	if s.Name != "" {
+		return s.Url + "/" + s.Name
+	}
+	return s.Url
 }
 
 type Auth struct {
