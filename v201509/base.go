@@ -1,4 +1,4 @@
-package v201506
+package v201509
 
 import (
 	"bytes"
@@ -11,13 +11,12 @@ import (
 )
 
 const (
-	version               = "v201506"
-	rootUrl               = "https://adwords.google.com/api/adwords/cm/"
-	baseUrl               = "https://adwords.google.com/api/adwords/cm/" + version
-	rootMcmUrl            = "https://adwords.google.com/api/adwords/mcm/"
-	baseMcmUrl            = "https://adwords.google.com/api/adwords/mcm/" + version
-	rootReportDownloadUrl = "https://adwords.google.com/api/adwords/reportdownload/"
-	baseReportDownloadUrl = "https://adwords.google.com/api/adwords/reportdownload/" + version
+	rootUrl    				= "https://adwords.google.com/api/adwords/cm/"
+	baseUrl    				= "https://adwords.google.com/api/adwords/cm/v201509"
+	rootMcmUrl 				= "https://adwords.google.com/api/adwords/mcm/"
+	baseMcmUrl 				= "https://adwords.google.com/api/adwords/mcm/v201509"
+	rootRemarketingUrl    	= "https://adwords.google.com/api/adwords/rm/"
+	baseRemarketingUrl    	= "https://adwords.google.com/api/adwords/rm/v201509"
 )
 
 type ServiceUrl struct {
@@ -39,7 +38,8 @@ var (
 	adGroupFeedServiceUrl           = ServiceUrl{baseUrl, "AdGroupFeedService"}
 	adGroupServiceUrl               = ServiceUrl{baseUrl, "AdGroupService"}
 	adParamServiceUrl               = ServiceUrl{baseUrl, "AdParamService"}
-	adwordsUserListServiceUrl       = ServiceUrl{baseUrl, "AdwordsUserListService"}
+	adwordsUserListServiceUrl       = ServiceUrl{baseRemarketingUrl, "AdwordsUserListService"}
+	batchJobServiceUrl 				= ServiceUrl{baseUrl, "BatchJobService"}
 	biddingStrategyServiceUrl       = ServiceUrl{baseUrl, "BiddingStrategyService"}
 	budgetOrderServiceUrl           = ServiceUrl{baseUrl, "BudgetOrderService"}
 	budgetServiceUrl                = ServiceUrl{baseUrl, "BudgetService"}
@@ -66,7 +66,6 @@ var (
 	mutateJobServiceUrl             = ServiceUrl{baseUrl, "MutateJobService"}
 	offlineConversionFeedServiceUrl = ServiceUrl{baseUrl, "OfflineConversionFeedService"}
 	reportDefinitionServiceUrl      = ServiceUrl{baseUrl, "ReportDefinitionService"}
-	reportDownloadServiceUrl        = ServiceUrl{baseReportDownloadUrl, ""}
 	sharedCriterionServiceUrl       = ServiceUrl{baseUrl, "SharedCriterionService"}
 	sharedSetServiceUrl             = ServiceUrl{baseUrl, "SharedSetService"}
 	targetingIdeaServiceUrl         = ServiceUrl{baseUrl, "TargetingIdeaService"}
@@ -74,10 +73,7 @@ var (
 )
 
 func (s ServiceUrl) String() string {
-	if s.Name != "" {
-		return s.Url + "/" + s.Name
-	}
-	return s.Url
+	return s.Url + "/" + s.Name
 }
 
 type Auth struct {

@@ -16,18 +16,18 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	// show all Campaigns
-	cs := gads.NewAdGroupService(&config.Auth)
-	fmt.Printf("AdGroups\n")
 
-	foundAdGroups, totalCount, err := cs.Query("SELECT AdGroupId, Name, Status WHERE CampaignId = '123'")
+	// show all Keywords
+	cs := gads.NewAdGroupCriterionService(&config.Auth)
+	fmt.Printf("Keywords\n")
+	foundKeywords, totalCount, err := cs.Query("SELECT Id, KeywordText, KeywordMatchType WHERE AdGroupId = '123'")
 	fmt.Println(totalCount)
 	if err != nil {
 		log.Fatal(err)
 	}
-	for _, adGroup := range foundAdGroups {
-		adGroupJSON, _ := json.MarshalIndent(adGroup, "", "  ")
-		fmt.Printf("%s\n", adGroupJSON)
+	for _, keyword := range foundKeywords {
+		keywordJSON, _ := json.MarshalIndent(keyword, "", "  ")
+		fmt.Printf("%s\n", keywordJSON)
 	}
 
 }

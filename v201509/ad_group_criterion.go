@@ -1,4 +1,4 @@
-package v201506
+package v201509
 
 import (
 	"encoding/xml"
@@ -14,9 +14,6 @@ func NewAdGroupCriterionService(auth *Auth) *AdGroupCriterionService {
 }
 
 type QualityInfo struct {
-	IsKeywordAdRelevanceAcceptable bool  `xml:"isKeywordAdRelevanceAcceptable,omitempty"`
-	IsLandingPageQualityAcceptable bool  `xml:"isLandingPageQualityAcceptable,omitempty"`
-	IsLandingPageLatencyAcceptable bool  `xml:"isLandingPageLatencyAcceptable,omitempty"`
 	QualityScore                   int64 `xml:"QualityScore,omitempty"`
 }
 

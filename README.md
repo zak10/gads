@@ -27,25 +27,24 @@ setup a configuration file.
 2. https://developers.google.com/adwords/api/docs/signingup
 3. https://developers.google.com/adwords/api/docs/guides/authentication
 
-Currently, the package will look for these generated oauth json credentials
-in a file at ./config.json.  To override, supply the -gads_oauth flag and
-specity the file's location:
+Currently, the you need to supply credentials via NewCredentialsFromParams
+or NewCredentialsFromFile.  The credentials can be obtained from the file
+generated in the previous step.
 
-    go run myproj.go --gads_oauth ~/my_oauth_creds.json
+For example in this CLI script, I am handling a conf file via flags:
+
+    go run cli/adgroups_awql.go -oauth ~/auth.json
+
+NOTE: Other examples still need to be updated to support the removal of the built-in
+oauth configuration file flag.
 
 ## versions
 
-This project currently supports v201409 and v201506.  To select
+This project currently supports ~~v201409 and~~ v201506.  To select
 the appropriate version, import the specific package:
 
 	  import (
 	    gads "github.com/colinmutter/gads/v201506"
-	  )
-
-or
-
-	  import (
-	    gads "github.com/colinmutter/gads/v201409"
 	  )
 
 
@@ -57,7 +56,7 @@ gads.Auth and parse it to the service initializer, then can call
 the service methods on the service object.
 
 ~~~ go
-     authConf, err := NewCredentials(oauth2.NoContext)
+     authConf, err := NewCredentialsFromFile("~/creds.json")
      campaignService := gads.NewCampaignService(&authConf.Auth)
 
      campaigns, totalCount, err := cs.Get(
@@ -82,6 +81,6 @@ See godoc for further documentation and examples.
 
 Gads is developed by [Edward Middleton](https://blog.vortorus.net/)
 
-and supported by:   
- - [Colin Mutter](http://github.com/colinmutter)   
+and supported by:
+ - [Colin Mutter](http://github.com/colinmutter)
  - [Ryan Fink](http://github.com/rfink)

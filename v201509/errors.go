@@ -1,4 +1,4 @@
-package v201506
+package v201509
 
 import (
 	"encoding/xml"
@@ -100,7 +100,7 @@ func (aes *ApiExceptionFault) UnmarshalXML(dec *xml.Decoder, start xml.StartElem
 				switch errorType {
 				case "CriterionError", "TargetError", "BudgetError",
 					"AdGroupServiceError", "NotEmptyError", "LabelError",
-					"UrlError", "AdError":
+					"UrlError", "AdError", "ns2:UserListError":
 					e := EntityError{}
 					dec.DecodeElement(&e, &start)
 					aes.Errors = append(aes.Errors, e)
