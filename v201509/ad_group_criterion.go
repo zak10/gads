@@ -14,7 +14,7 @@ func NewAdGroupCriterionService(auth *Auth) *AdGroupCriterionService {
 }
 
 type QualityInfo struct {
-	QualityScore                   int64 `xml:"QualityScore,omitempty"`
+	QualityScore                   int64 `xml:"qualityScore,omitempty"`
 }
 
 type CpcAmount struct {
