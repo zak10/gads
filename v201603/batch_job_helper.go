@@ -85,13 +85,55 @@ func (s *BatchJobHelper) UploadBatchJobOperations(jobOperations []interface{}, u
 			Ops: operations,
 		}
 
+		client := &http.Client{}
+
+		// Need to get the upload url
+		req, err := http.NewRequest("POST", url.Url, nil)
+		if err != nil {
+			return err
+		}
+		
+    	req.Header.Set("Content-Type", "application/xml")
+    	req.Header.Set("Content-Length", "0")
+    	req.Header.Set("x-goog-resumable", "start")
+
+    	response, err := client.Do(req)
+		
+		if err != nil {
+			return err
+		}
+
+		// If we got a valid upload url it will be 201
+		if response.StatusCode != 201 {
+			respBody, err := ioutil.ReadAll(response.Body)
+
+			if err != nil {
+				return err
+			}
+			return errors.New(fmt.Sprintf("Invalid response received. %v received. Body: %v", response.StatusCode, string(respBody)))
+		}
+
+    	location := response.Header.Get("Location")
+
 		reqBody, err := xml.MarshalIndent(mutation,"  ", "  ")
+		bodyLength := len(reqBody)
 
 		if err != nil {
 			return err
 		}
 
-		resp, err := http.Post(url.Url, "text/xml", bytes.NewReader(reqBody))
+		req, err = http.NewRequest("PUT", location, bytes.NewReader(reqBody))
+		
+		if err != nil {
+			return err
+		}
+		
+		// Set headers for incremental upload
+    	req.Header.Set("Content-Type", "application/xml")
+    	req.Header.Set("Content-Length", string(bodyLength))
+    	req.Header.Set("Content-Range", fmt.Sprintf("bytes 0-%v/%v", bodyLength-1, bodyLength))
+
+    	resp, err := client.Do(req)
 		
 		if err != nil {
 			return err

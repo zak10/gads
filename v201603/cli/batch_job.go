@@ -80,22 +80,22 @@ func main() {
 			}*/
 	// Creating AdGroups
 	ago := gads.AdGroupOperations{
-				"ADD": {
-					gads.AdGroup{
-						Name:       "test ad group " + rand_str(10),
-						Status:     "PAUSED",
-						CampaignId: campaignId,
-					},
-					gads.AdGroup{
-						Name:       "test ad group " + rand_str(10),
-						Status:     "PAUSED",
-						CampaignId: campaignId,
-					},
-				},
+				"ADD": {},
 			}
 
-			var operations []interface{}
-			operations = append(operations, ago)
+	// stress test uploading
+	var adGroupNum int = 10000
+
+	for i := 0; i < adGroupNum; i++ {
+		ago["ADD"] = append(ago["ADD"], gads.AdGroup{
+						Name:       "test ad group " + rand_str(10),
+						Status:     "PAUSED",
+						CampaignId: campaignId,
+					})
+	}
+
+	var operations []interface{}
+	operations = append(operations, ago)
 
 	bjo := gads.BatchJobOperations{
 		BatchJobOperations: []gads.BatchJobOperation{
@@ -107,7 +107,7 @@ func main() {
 	}
 
 	if resp, err := bs.Mutate(bjo); err == nil {
-		
+
 		bjh := gads.NewBatchJobHelper(&config.Auth)
 		err = bjh.UploadBatchJobOperations(operations, *resp[0].UploadUrl)
 
