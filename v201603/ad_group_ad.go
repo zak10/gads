@@ -23,6 +23,7 @@ type TextAd struct {
 	FinalAppUrls         []AppUrl          `xml:"finalAppUrls,omitempty"`
 	TrackingUrlTemplate  string            `xml:"trackingUrlTemplate,omitempty"`
 	UrlCustomParameters  *CustomParameters `xml:"urlCustomParameters,omitempty"`
+	Type 				 string            `xml:"type,omitempty"`
 	DevicePreference     int64             `xml:"devicePreference,omitempty"`
 	Headline             string            `xml:"headline"`
 	Description1         string            `xml:"description1"`
@@ -44,6 +45,7 @@ type ImageAd struct {
 	FinalAppUrls         []AppUrl          `xml:"finalAppUrls,omitempty"`
 	TrackingUrlTemplate  string            `xml:"trackingUrlTemplate,omitempty"`
 	UrlCustomParameters  *CustomParameters `xml:"urlCustomParameters,omitempty"`
+	Type 				 string            `xml:"type,omitempty"`
 	DevicePreference     int64             `xml:"devicePreference,omitempty"`
 	Image                int64             `xml:"imageId"`
 	Name                 string            `xml:"name"`
@@ -65,6 +67,7 @@ type MobileAd struct {
 	FinalAppUrls         []AppUrl          `xml:"finalAppUrls,omitempty"`
 	TrackingUrlTemplate  string            `xml:"trackingUrlTemplate,omitempty"`
 	UrlCustomParameters  *CustomParameters `xml:"urlCustomParameters,omitempty"`
+	Type 				 string            `xml:"type,omitempty"`
 	DevicePreference     int64             `xml:"devicePreference,omitempty"`
 	Headline             string            `xml:"headline"`
 	Description          string            `xml:"description"`
@@ -102,6 +105,7 @@ type TemplateAd struct {
 	FinalAppUrls         []AppUrl          `xml:"finalAppUrls,omitempty"`
 	TrackingUrlTemplate  string            `xml:"trackingUrlTemplate,omitempty"`
 	UrlCustomParameters  *CustomParameters `xml:"urlCustomParameters,omitempty"`
+	Type 				 string            `xml:"type,omitempty"`
 	DevicePreference     int64             `xml:"devicePreference,omitempty"`
 	TemplateId           int64             `xml:"templateId"`
 	AdUnionId            int64             `xml:"adUnionId>id"`
@@ -127,6 +131,7 @@ type DynamicSearchAd struct {
 	FinalAppUrls         []AppUrl          `xml:"finalAppUrls,omitempty"`
 	TrackingUrlTemplate  string            `xml:"trackingUrlTemplate,omitempty"`
 	UrlCustomParameters  *CustomParameters `xml:"urlCustomParameters,omitempty"`
+	Type 				 string            `xml:"type,omitempty"`
 	DevicePreference     int64             `xml:"devicePreference,omitempty"`
 	Status               string            `xml:"-"`
 	ApprovalStatus       string            `xml:"-"`
@@ -137,6 +142,7 @@ type DynamicSearchAd struct {
 type ProductAd struct {
 	AdGroupId            int64    `xml:"-"`
 	Id                   int64    `xml:"id,omitempty"`
+	Type 				 string            `xml:"type,omitempty"`
 	Status               string   `xml:"-"`
 	ApprovalStatus       string   `xml:"-"`
 	DisapprovalReasons   []string `xml:"-"`
