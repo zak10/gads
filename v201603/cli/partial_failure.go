@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	gads "github.com/bbachtel/gads/v201603"
+	gads "github.com/colinmutter/gads/v201603"
 	"log"
 )
 
