@@ -149,11 +149,27 @@ type Address struct {
 	CountryCode    string `xml:"countryCode"`
 }
 
+type ProductDimension struct {
+	Type  string `xml:"ProductDimension.Type"`
+	Value string `xml:"value"`
+}
+
+//func (p ProductDimension) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) error {
+//	dimensionType, err := findAttr(start.Attr, xml.Name{Space: "http://www.w3.org/2001/XMLSchema-instance", Local: "type"})
+//	if err != nil {
+//		return err
+//	}
+//
+//	p.Type = dimensionType
+//	return nil
+//}
+
 type ProductPartition struct {
-	Id                int64  `xml:"id,omitempty"`
-	CriteriaType      string `xml:"type"`
-	PartitionType     string `xml:"partitionType,omitempty"`
-	ParentCriterionId int64  `xml:"parentCriterionId,omitempty"`
+	Id                int64            `xml:"id,omitempty"`
+	CriteriaType      string           `xml:"type"`
+	PartitionType     string           `xml:"partitionType,omitempty"`
+	ParentCriterionId int64            `xml:"parentCriterionId,omitempty"`
+	Dimension         ProductDimension `xml:"caseValue"`
 }
 
 // RadiusDistanceUnits: KILOMETERS, MILES
