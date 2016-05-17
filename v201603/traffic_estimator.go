@@ -57,19 +57,19 @@ type CampaignEstimate struct {
 //
 //	keywordEstimateRequests := []KeywordEstimateRequest{
 //		KeywordEstimateRequest{
-//			Keyword{
+//			KeywordCriterion{
 //				Text:      "mars cruise",
 //				MatchType: "BROAD",
 //			},
 //		},
 //		KeywordEstimateRequest{
-//			Keyword{
+//			KeywordCriterion{
 //				Text:      "cheap cruise",
 //				MatchType: "EXACT",
 //			},
 //		},
 //		KeywordEstimateRequest{
-//			Keyword{
+//			KeywordCriterion{
 //				Text:      "cruise",
 //				MatchType: "EXACT",
 //			},
