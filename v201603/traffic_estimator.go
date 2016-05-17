@@ -10,14 +10,8 @@ func NewTrafficEstimatorService(auth *Auth) *TrafficEstimatorService {
 	return &TrafficEstimatorService{Auth: *auth}
 }
 
-type Keyword struct {
-	Id        int64  `xml:"https://adwords.google.com/api/adwords/cm/v201603 id,omitempty"`
-	Text      string `xml:"https://adwords.google.com/api/adwords/cm/v201603 text,omitempty"`      // Text: up to 80 characters and ten words
-	MatchType string `xml:"https://adwords.google.com/api/adwords/cm/v201603 matchType,omitempty"` // MatchType:  "EXACT", "PHRASE", "BROAD"
-}
-
 type KeywordEstimateRequest struct {
-	Keyword Keyword `xml:"keyword"`
+	Keyword KeywordCriterion `xml:"keyword"`
 }
 
 type AdGroupEstimateRequest struct {
