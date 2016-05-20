@@ -154,16 +154,6 @@ type ProductDimension struct {
 	Value string `xml:"value"`
 }
 
-//func (p ProductDimension) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) error {
-//	dimensionType, err := findAttr(start.Attr, xml.Name{Space: "http://www.w3.org/2001/XMLSchema-instance", Local: "type"})
-//	if err != nil {
-//		return err
-//	}
-//
-//	p.Type = dimensionType
-//	return nil
-//}
-
 type ProductPartition struct {
 	Id                int64            `xml:"id,omitempty"`
 	CriteriaType      string           `xml:"type"`

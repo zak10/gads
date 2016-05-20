@@ -164,7 +164,6 @@ func (s AdGroupCriterionService) Get(selector Selector) (adGroupCriterions AdGro
 	}{}
 	err = xml.Unmarshal([]byte(respBody), &getResp)
 	if err != nil {
-		fmt.Println(err)
 		return adGroupCriterions, totalCount, err
 	}
 	return getResp.AdGroupCriterions, getResp.Size, err
