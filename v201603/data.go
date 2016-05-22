@@ -13,31 +13,31 @@ func NewDataService(auth *Auth) *DataService {
 }
 
 type LandscapePoint struct {
-	Bid  					*int64 		`xml:"bid>microAmount,omitempty"`
-	Clicks 					*int64 		`xml:"clicks,omitempty"`
-	Cost 					*int64 		`xml:"cost>microAmount,omitempty"`
-	Impressions 			*int64 		`xml:"impressions,omitempty"`
-	PromotedImpressions 	*int64 		`xml:"promotedImpressions,omitempty"`
+	Bid                 *int64 `xml:"bid>microAmount,omitempty"`
+	Clicks              *int64 `xml:"clicks,omitempty"`
+	Cost                *int64 `xml:"cost>microAmount,omitempty"`
+	Impressions         *int64 `xml:"impressions,omitempty"`
+	PromotedImpressions *int64 `xml:"promotedImpressions,omitempty"`
 }
 
 type BidLandscape struct {
-	CampaignId 			*int64 				`xml:"campaignId,omitempty"`
-	AdGroupId 			*int64 				`xml:"adGroupId,omitempty"`
-	StartDate 			*string 			`xml:"startDate,omitempty"`
-	EndDate 			*string 			`xml:"endDate,omitempty"`
-	LandscapePoints 	[]LandscapePoint 	`xml:"landscapePoints"`
+	CampaignId      *int64           `xml:"campaignId,omitempty"`
+	AdGroupId       *int64           `xml:"adGroupId,omitempty"`
+	StartDate       *string          `xml:"startDate,omitempty"`
+	EndDate         *string          `xml:"endDate,omitempty"`
+	LandscapePoints []LandscapePoint `xml:"landscapePoints"`
 }
 
 type AdGroupBidLandscape struct {
 	BidLandscape
-	Type 				string 		`xml:"type"`
-	LandscapeCurrent 	bool 		`xml:"landscapeCurrent"`
-	Errors              []error     `xml:"-"`
+	Type             string  `xml:"type"`
+	LandscapeCurrent bool    `xml:"landscapeCurrent"`
+	Errors           []error `xml:"-"`
 }
 
 type CriterionBidLandscape struct {
 	BidLandscape
-	CriterionId 			*int64 				`xml:"criterionId,omitempty"`
+	CriterionId *int64 `xml:"criterionId,omitempty"`
 }
 
 // GetAdGroupBidLandscape returns an array of AdGroupBidLandscape objects
@@ -98,8 +98,8 @@ func (s *DataService) GetAdGroupBidLandscape(selector Selector) (adGroupBidLands
 		return adGroupBidLandscapes, totalCount, err
 	}
 	getResp := struct {
-		Size      				int64      `xml:"rval>totalNumEntries"`
-		AdGroupBidLandscapes 	[]AdGroupBidLandscape `xml:"rval>entries"`
+		Size                 int64                 `xml:"rval>totalNumEntries"`
+		AdGroupBidLandscapes []AdGroupBidLandscape `xml:"rval>entries"`
 	}{}
 	err = xml.Unmarshal([]byte(respBody), &getResp)
 	if err != nil {
@@ -167,8 +167,8 @@ func (s *DataService) GetCriterionBidLandscape(selector Selector) (criterionBidL
 		return criterionBidLandscapes, totalCount, err
 	}
 	getResp := struct {
-		Size      				int64      `xml:"rval>totalNumEntries"`
-		CriterionBidLandscapes 	[]CriterionBidLandscape `xml:"rval>entries"`
+		Size                   int64                   `xml:"rval>totalNumEntries"`
+		CriterionBidLandscapes []CriterionBidLandscape `xml:"rval>entries"`
 	}{}
 	err = xml.Unmarshal([]byte(respBody), &getResp)
 	if err != nil {
@@ -184,7 +184,7 @@ func (s *DataService) GetCriterionBidLandscape(selector Selector) (criterionBidL
 //     https://developers.google.com/adwords/api/docs/reference/v201603/DataService#queryadgroupbidlandscape
 //
 func (s *DataService) QueryAdGroupBidLandscape(query string) (adGroupBidLandscapes []AdGroupBidLandscape, totalCount int64, err error) {
-	
+
 	respBody, err := s.Auth.request(
 		dataServiceUrl,
 		"queryAdGroupBidLandscape",
@@ -202,7 +202,7 @@ func (s *DataService) QueryAdGroupBidLandscape(query string) (adGroupBidLandscap
 	}
 
 	getResp := struct {
-		Size     int64     `xml:"rval>totalNumEntries"`
+		Size                 int64                 `xml:"rval>totalNumEntries"`
 		AdGroupBidLandscapes []AdGroupBidLandscape `xml:"rval>entries"`
 	}{}
 
@@ -220,7 +220,7 @@ func (s *DataService) QueryAdGroupBidLandscape(query string) (adGroupBidLandscap
 //     https://developers.google.com/adwords/api/docs/reference/v201603/DataService#querycriterionbidlandscape
 //
 func (s *DataService) QueryCriterionBidLandscape(query string) (criterionBidLandscapes []CriterionBidLandscape, totalCount int64, err error) {
-	
+
 	respBody, err := s.Auth.request(
 		dataServiceUrl,
 		"queryCriterionBidLandscape",
@@ -238,7 +238,7 @@ func (s *DataService) QueryCriterionBidLandscape(query string) (criterionBidLand
 	}
 
 	getResp := struct {
-		Size     int64     `xml:"rval>totalNumEntries"`
+		Size                   int64                   `xml:"rval>totalNumEntries"`
 		CriterionBidLandscapes []CriterionBidLandscape `xml:"rval>entries"`
 	}{}
 
