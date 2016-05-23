@@ -160,6 +160,7 @@ type ProductPartition struct {
 	PartitionType     string           `xml:"partitionType,omitempty"`
 	ParentCriterionId int64            `xml:"parentCriterionId,omitempty"`
 	Dimension         ProductDimension `xml:"caseValue"`
+	Cpc               *Cpc             // This value is inherited from BiddableAdgroupCriterion
 }
 
 // RadiusDistanceUnits: KILOMETERS, MILES
