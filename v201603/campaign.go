@@ -361,7 +361,7 @@ func (s *CampaignService) MutateLabel(campaignLabelOperations CampaignLabelOpera
 //     https://developers.google.com/adwords/api/docs/reference/v201409/CampaignService#query
 //
 func (s *CampaignService) Query(query string) (campaigns []Campaign, totalCount int64, err error) {
-	
+
 	respBody, err := s.Auth.request(
 		campaignServiceUrl,
 		"query",
@@ -379,7 +379,7 @@ func (s *CampaignService) Query(query string) (campaigns []Campaign, totalCount 
 	}
 
 	getResp := struct {
-		Size     int64     `xml:"rval>totalNumEntries"`
+		Size      int64      `xml:"rval>totalNumEntries"`
 		Campaigns []Campaign `xml:"rval>entries"`
 	}{}
 

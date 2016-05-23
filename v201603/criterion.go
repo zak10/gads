@@ -150,8 +150,9 @@ type Address struct {
 }
 
 type ProductDimension struct {
-	Type  string `xml:"ProductDimension.Type"`
-	Value string `xml:"value"`
+	Type          string `xml:"ProductDimension.Type"`
+	DimensionType string `xml:"type"`
+	Value         string `xml:"value"`
 }
 
 type ProductPartition struct {

@@ -4,11 +4,11 @@ import (
 	"bytes"
 	"encoding/csv"
 	"encoding/xml"
+	"errors"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"net/url"
-	"errors"
 )
 
 type ReportDownloadService struct {
@@ -64,7 +64,7 @@ func (s *ReportDownloadService) AWQL(awql string, fmt string) (res interface{}, 
 		return res, err
 	}
 	return string(respBody), err*/
-	
+
 	// if we didn't get a 200 bubble up the error
 	if resp.StatusCode != 200 {
 		response, err := ioutil.ReadAll(resp.Body)
