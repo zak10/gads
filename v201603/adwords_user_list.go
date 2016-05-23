@@ -1,8 +1,8 @@
 package v201603
 
 import (
-	"encoding/xml"
 	sha256 "crypto/sha256"
+	"encoding/xml"
 	"fmt"
 	"io"
 )
@@ -54,19 +54,19 @@ type Rule struct {
 }
 
 type UserListOperations struct {
-	XMLName 	xml.Name
-	Operations 	[]Operation 	`xml:"operations"`
+	XMLName    xml.Name
+	Operations []Operation `xml:"operations"`
 }
 
 type MutateMembersOperations struct {
-	XMLName 	xml.Name
-	Operations 	[]Operation 	`xml:"operations"`
+	XMLName    xml.Name
+	Operations []Operation `xml:"operations"`
 }
 
 type MutateMembersOperand struct {
-	UserListId 	int64 		`xml:"userListId"`
-	DataType 	string 		`xml:"dataType"`
-	Members 	[]string 	`xml:"members"`
+	UserListId int64    `xml:"userListId"`
+	DataType   string   `xml:"dataType"`
+	Members    []string `xml:"members"`
 }
 
 type UserList struct {
@@ -104,10 +104,10 @@ type UserList struct {
 	SeedListSize            *int64  `xml:"seedListSize,omitempty"`
 
 	// CrmBasedUserList
-	OptOutLink	*string 	`xml:"optOutLink,omitempty"`
+	OptOutLink *string `xml:"optOutLink,omitempty"`
 
 	// Keep track of xsi:type for mutate and mutateMembers
-	Xsi_type  	string 			`xml:"http://www.w3.org/2001/XMLSchema-instance type,attr,omitempty"`
+	Xsi_type string `xml:"http://www.w3.org/2001/XMLSchema-instance type,attr,omitempty"`
 }
 
 // DoubleClick platform user list mapped to AdWords
@@ -123,7 +123,7 @@ func NewLogicalUserList(name, description, status, integrationCode string, membe
 		IntegrationCode:    integrationCode,
 		MembershipLifeSpan: membershipLifeSpan,
 		LogicalRules:       &logicalRules,
-		Xsi_type: 			"LogicalUserList",
+		Xsi_type:           "LogicalUserList",
 	}
 }
 
@@ -135,7 +135,7 @@ func NewBasicUserList(name, description, status, integrationCode string, members
 		IntegrationCode:    integrationCode,
 		MembershipLifeSpan: membershipLifeSpan,
 		ConversionTypes:    &conversionTypes,
-		Xsi_type: 			"BasicUserList",
+		Xsi_type:           "BasicUserList",
 	}
 }
 
@@ -149,7 +149,7 @@ func NewDateSpecificRuleUserList(name, description, status, integrationCode stri
 		Rule:               &rule,
 		StartDate:          &startDate,
 		EndDate:            &endDate,
-		Xsi_type: 			"DateSpecificRuleUserList",
+		Xsi_type:           "DateSpecificRuleUserList",
 	}
 }
 
@@ -161,7 +161,7 @@ func NewExpressionRuleUserList(name, description, status, integrationCode string
 		IntegrationCode:    integrationCode,
 		MembershipLifeSpan: membershipLifeSpan,
 		Rule:               &rule,
-		Xsi_type: 			"ExpressionRuleUserList",
+		Xsi_type:           "ExpressionRuleUserList",
 	}
 }
 
@@ -172,7 +172,7 @@ func NewSimilarUserList(name, description, status, integrationCode string, membe
 		Status:             status,
 		IntegrationCode:    integrationCode,
 		MembershipLifeSpan: membershipLifeSpan,
-		Xsi_type: 			"SimilarUserList",
+		Xsi_type:           "SimilarUserList",
 	}
 }
 
@@ -181,15 +181,14 @@ func NewCrmBasedUserList(name, description string, membershipLifeSpan int64, opt
 		Name:               name,
 		Description:        description,
 		MembershipLifeSpan: membershipLifeSpan,
-		OptOutLink: 		&optOutLink,
-		Xsi_type: 			"CrmBasedUserList",
+		OptOutLink:         &optOutLink,
+		Xsi_type:           "CrmBasedUserList",
 	}
 }
 
 func NewMutateMembersOperand() *MutateMembersOperand {
 	return &MutateMembersOperand{DataType: "EMAIL_SHA256"}
 }
-
 
 // Get returns an array of adwords user lists and the total number of adwords user lists matching
 // the selector.
@@ -268,7 +267,7 @@ func (s AdwordsUserListService) Get(selector Selector) (userLists []UserList, er
 }
 
 // Mutate adds/sets a collection of user lists. Returns a list of User Lists
-// 
+//
 // Example
 // 	auls := gads.NewAdwordsUserListService(&config.Auth)
 //
@@ -290,12 +289,12 @@ func (s AdwordsUserListService) Get(selector Selector) (userLists []UserList, er
 //     https://developers.google.com/adwords/api/docs/reference/v201603/AdwordsUserListService#mutate
 //
 func (s *AdwordsUserListService) Mutate(userListOperations UserListOperations) (adwordsUserLists []UserList, err error) {
-	
+
 	userListOperations.XMLName = xml.Name{
-			Space: baseRemarketingUrl,
-			Local: "mutate",
-		}
-	
+		Space: baseRemarketingUrl,
+		Local: "mutate",
+	}
+
 	respBody, err := s.Auth.request(adwordsUserListServiceUrl, "mutate", userListOperations)
 	if err != nil {
 		return adwordsUserLists, err
@@ -311,7 +310,7 @@ func (s *AdwordsUserListService) Mutate(userListOperations UserListOperations) (
 	return mutateResp.AdwordsUserLists, err
 }
 
-// Mutate adds/removes members/emails to specified user list. 
+// Mutate adds/removes members/emails to specified user list.
 // Note: Only 1 operation per userListId
 //
 // Example
@@ -341,10 +340,10 @@ func (s *AdwordsUserListService) Mutate(userListOperations UserListOperations) (
 //
 func (s *AdwordsUserListService) MutateMembers(mutateMembersOperations MutateMembersOperations) (adwordsUserLists []UserList, err error) {
 	mutateMembersOperations.XMLName = xml.Name{
-			Space: baseRemarketingUrl,
-			Local: "mutateMembers",
-		}
-	
+		Space: baseRemarketingUrl,
+		Local: "mutateMembers",
+	}
+
 	respBody, err := s.Auth.request(adwordsUserListServiceUrl, "mutateMembers", mutateMembersOperations)
 	if err != nil {
 		return adwordsUserLists, err

@@ -2,8 +2,8 @@ package v201603
 
 import (
 	"encoding/xml"
-	"strings"
 	"fmt"
+	"strings"
 )
 
 type BatchJobService struct {
@@ -11,8 +11,8 @@ type BatchJobService struct {
 }
 
 type BatchJobPage struct {
-	TotalNumEntries 	int 		`xml:"rval>totalNumEntries"`
-	BatchJobs 			[]BatchJob 	`xml:"rval>entries"`
+	TotalNumEntries int        `xml:"rval>totalNumEntries"`
+	BatchJobs       []BatchJob `xml:"rval>entries"`
 }
 
 type BatchJobOperations struct {
@@ -20,52 +20,52 @@ type BatchJobOperations struct {
 }
 
 type Operation struct {
-	Operator   	string   		`xml:"https://adwords.google.com/api/adwords/cm/v201603 operator"`
-	Operand 	interface{}		`xml:"operand"`
-	Xsi_type  	string 			`xml:"http://www.w3.org/2001/XMLSchema-instance type,attr,omitempty"`
+	Operator string      `xml:"https://adwords.google.com/api/adwords/cm/v201603 operator"`
+	Operand  interface{} `xml:"operand"`
+	Xsi_type string      `xml:"http://www.w3.org/2001/XMLSchema-instance type,attr,omitempty"`
 }
 
 type BatchJobOperation struct {
-	Operator 	string 		`xml:"operator"`
-	Operand 	BatchJob 	`xml:"operand"`
+	Operator string   `xml:"operator"`
+	Operand  BatchJob `xml:"operand"`
 }
 
 type BatchJob struct {
-	Id 					int64 						`xml:"id,omitempty" json:",string"`
-	Status 				string 						`xml:"status,omitempty"`
-	ProgressStats 		*ProgressStats 				`xml:"progressStats,omitempty"`
-	UploadUrl 			*TemporaryUrl 				`xml:"uploadUrl,omitempty"`
-	DownloadUrl 		*TemporaryUrl 				`xml:"downloadUrl,omitempty"`
-	ProcessingErrors 	*BatchJobProcessingError 	`xml:"processingErrors,omitempty"`
+	Id               int64                    `xml:"id,omitempty" json:",string"`
+	Status           string                   `xml:"status,omitempty"`
+	ProgressStats    *ProgressStats           `xml:"progressStats,omitempty"`
+	UploadUrl        *TemporaryUrl            `xml:"uploadUrl,omitempty"`
+	DownloadUrl      *TemporaryUrl            `xml:"downloadUrl,omitempty"`
+	ProcessingErrors *BatchJobProcessingError `xml:"processingErrors,omitempty"`
 }
 
 type TemporaryUrl struct {
-	Url 		string 	`xml:"url"`
-	Expiration 	string 	`xml:"expiration,"`
+	Url        string `xml:"url"`
+	Expiration string `xml:"expiration,"`
 }
 
 type BatchJobProcessingError struct {
-	FieldPath 		string 	`xml:"fieldPath"`
-	Trigger 		string 	`xml:"trigger"`
-	ErrorString 	string 	`xml:"errorString"`
-	Reason 			string 	`xml:"reason"`
+	FieldPath   string `xml:"fieldPath"`
+	Trigger     string `xml:"trigger"`
+	ErrorString string `xml:"errorString"`
+	Reason      string `xml:"reason"`
 }
 
 type ProgressStats struct {
-	NumOperationsExecuted 		int64 	`xml:"numOperationsExecuted" json:",string"`
-	NumOperationsSucceeded 		int64 	`xml:"numOperationsSucceeded" json:",string"`
-	EstimatedPercentExecuted 	int 	`xml:"estimatedPercentExecuted"`
-	NumResultsWritten 			int64 	`xml:"numResultsWritten" json:",string"`
+	NumOperationsExecuted    int64 `xml:"numOperationsExecuted" json:",string"`
+	NumOperationsSucceeded   int64 `xml:"numOperationsSucceeded" json:",string"`
+	EstimatedPercentExecuted int   `xml:"estimatedPercentExecuted"`
+	NumResultsWritten        int64 `xml:"numResultsWritten" json:",string"`
 }
 
 type MutateResults struct {
-	Result 		MutateResult 	`xml:"result"`
-	ErrorList 	[]MutateErrors 	`xml:"errorList"`
-	Index 		int 			`xml:"index"`
+	Result    MutateResult   `xml:"result"`
+	ErrorList []MutateErrors `xml:"errorList"`
+	Index     int            `xml:"index"`
 }
 
 type MutateErrors struct {
-	Errors 		EntityError 	`xml:"errors"`
+	Errors EntityError `xml:"errors"`
 }
 
 type MutateResult interface{}
@@ -114,9 +114,9 @@ func (s *BatchJobService) Get(selector Selector) (batchJobPage BatchJobPage, err
 	if err != nil {
 		return batchJobPage, err
 	}
-	
+
 	err = xml.Unmarshal([]byte(respBody), &batchJobPage)
-	
+
 	return batchJobPage, err
 }
 
@@ -137,7 +137,7 @@ func (s *BatchJobService) Get(selector Selector) (batchJobPage BatchJobPage, err
 //
 // 	https://developers.google.com/adwords/api/docs/reference/v201603/BatchJobService#mutate
 func (s *BatchJobService) Mutate(batchJobOperations BatchJobOperations) (batchJobs []BatchJob, err error) {
-	
+
 	mutation := struct {
 		XMLName xml.Name
 		Ops     []BatchJobOperation `xml:"operations"`
@@ -163,7 +163,7 @@ func (s *BatchJobService) Mutate(batchJobOperations BatchJobOperations) (batchJo
 }
 
 func (s *BatchJobService) Query() {
-	
+
 }
 
 func (mr *MutateResults) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) (err error) {
@@ -266,33 +266,33 @@ func (mr *MutateResults) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) 
 // getXsiType validates the schema instance type and returns it since Bulk Mutate requires it to be set
 func getXsiType(objectName string) (string, bool) {
 	switch {
-		case strings.Contains(objectName, "AdGroupAdLabelOperation"):
-			return "AdGroupAdLabelOperation", true
-		case strings.Contains(objectName, "AdGroupAdOperation"):
-			return "AdGroupAdOperation", true
-		case strings.Contains(objectName, "AdGroupBidModifierOperation"):
-			return "AdGroupBidModifierOperation", true
-		case strings.Contains(objectName, "AdGroupCriterionLabelOperation"):
-			return "AdGroupCriterionLabelOperation", true
-		case strings.Contains(objectName, "AdGroupCriterionOperation"):
-			return "AdGroupCriterionOperation", true
-		case strings.Contains(objectName, "AdGroupLabelOperation"):
-			return "AdGroupLabelOperation", true
-		case strings.Contains(objectName, "AdGroupOperation"):
-			return "AdGroupOperation", true
-		case strings.Contains(objectName, "BudgetOperation"):
-			return "BudgetOperation", true
-		case strings.Contains(objectName, "CampaignAdExtensionOperation"):
-			return "CampaignAdExtensionOperation", true
-		case strings.Contains(objectName, "CampaignCriterionOperation"):
-			return "CampaignCriterionOperation", true
-		case strings.Contains(objectName, "CampaignLabelOperation"):
-			return "CampaignLabelOperation", true
-		case strings.Contains(objectName, "CampaignOperation"):
-			return "CampaignOperation", true
-		case strings.Contains(objectName, "FeedItemOperation"):
-			return "FeedItemOperation", true
-		default:
-			return "", false
+	case strings.Contains(objectName, "AdGroupAdLabelOperation"):
+		return "AdGroupAdLabelOperation", true
+	case strings.Contains(objectName, "AdGroupAdOperation"):
+		return "AdGroupAdOperation", true
+	case strings.Contains(objectName, "AdGroupBidModifierOperation"):
+		return "AdGroupBidModifierOperation", true
+	case strings.Contains(objectName, "AdGroupCriterionLabelOperation"):
+		return "AdGroupCriterionLabelOperation", true
+	case strings.Contains(objectName, "AdGroupCriterionOperation"):
+		return "AdGroupCriterionOperation", true
+	case strings.Contains(objectName, "AdGroupLabelOperation"):
+		return "AdGroupLabelOperation", true
+	case strings.Contains(objectName, "AdGroupOperation"):
+		return "AdGroupOperation", true
+	case strings.Contains(objectName, "BudgetOperation"):
+		return "BudgetOperation", true
+	case strings.Contains(objectName, "CampaignAdExtensionOperation"):
+		return "CampaignAdExtensionOperation", true
+	case strings.Contains(objectName, "CampaignCriterionOperation"):
+		return "CampaignCriterionOperation", true
+	case strings.Contains(objectName, "CampaignLabelOperation"):
+		return "CampaignLabelOperation", true
+	case strings.Contains(objectName, "CampaignOperation"):
+		return "CampaignOperation", true
+	case strings.Contains(objectName, "FeedItemOperation"):
+		return "FeedItemOperation", true
+	default:
+		return "", false
 	}
 }

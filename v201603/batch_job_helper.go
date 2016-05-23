@@ -1,14 +1,14 @@
 package v201603
 
 import (
-	"reflect"
-	"encoding/xml"
 	"bytes"
-	"net/http"
-	"io/ioutil"
+	"encoding/xml"
 	"errors"
-	"os"
 	"fmt"
+	"io/ioutil"
+	"net/http"
+	"os"
+	"reflect"
 )
 
 type BatchJobHelper struct {
@@ -22,7 +22,7 @@ func NewBatchJobHelper(auth *Auth) *BatchJobHelper {
 //	UploadBatchJobOperations uploads batch operations to an BatchJob.UploadUrl from BatchJobService.Mutate
 //
 //	Example
-//	
+//
 //	ago := gads.AdGroupOperations{
 //			"ADD": {
 //				gads.AdGroup{
@@ -41,7 +41,7 @@ func NewBatchJobHelper(auth *Auth) *BatchJobHelper {
 //	var operations []interface{}
 //	operations = append(operations, ago)
 //	err = batchJobHelper.UploadBatchJobOperations(operations, UploadUrl)
-// 		
+//
 //
 //	https://developers.google.com/adwords/api/docs/guides/batch-jobs?hl=en#upload_operations_to_the_upload_url
 func (s *BatchJobHelper) UploadBatchJobOperations(jobOperations []interface{}, url TemporaryUrl) (err error) {
@@ -50,33 +50,33 @@ func (s *BatchJobHelper) UploadBatchJobOperations(jobOperations []interface{}, u
 	for _, operation := range jobOperations {
 		if operationType, valid := getXsiType(reflect.ValueOf(operation).Type().String()); valid {
 			switch reflect.TypeOf(operation).Kind() {
-			    case reflect.Map:
-			        ops := reflect.ValueOf(operation)
+			case reflect.Map:
+				ops := reflect.ValueOf(operation)
 
-			        keys := ops.MapKeys()
+				keys := ops.MapKeys()
 
-			        for _, action := range keys {
-			        	jobs := ops.MapIndex(action)
+				for _, action := range keys {
+					jobs := ops.MapIndex(action)
 
-			        	for i := 0; i < jobs.Len(); i++ {
-				            
-				            operations = append(operations,
-								Operation{
-									Operator:   action.String(),
-									Operand: 	jobs.Index(i).Interface(),
-									Xsi_type: 	operationType,
-								},
-							)
-				        }
+					for i := 0; i < jobs.Len(); i++ {
+
+						operations = append(operations,
+							Operation{
+								Operator: action.String(),
+								Operand:  jobs.Index(i).Interface(),
+								Xsi_type: operationType,
+							},
+						)
 					}
-	    	}
-	    }
+				}
+			}
+		}
 	}
 
 	if len(operations) > 0 {
 		mutation := struct {
 			XMLName xml.Name
-			Ops     []Operation 			`xml:"operations"`
+			Ops     []Operation `xml:"operations"`
 		}{
 			XMLName: xml.Name{
 				Space: baseUrl,
@@ -92,13 +92,13 @@ func (s *BatchJobHelper) UploadBatchJobOperations(jobOperations []interface{}, u
 		if err != nil {
 			return err
 		}
-		
-    	req.Header.Set("Content-Type", "application/xml")
-    	req.Header.Set("Content-Length", "0")
-    	req.Header.Set("x-goog-resumable", "start")
 
-    	response, err := client.Do(req)
-		
+		req.Header.Set("Content-Type", "application/xml")
+		req.Header.Set("Content-Length", "0")
+		req.Header.Set("x-goog-resumable", "start")
+
+		response, err := client.Do(req)
+
 		if err != nil {
 			return err
 		}
@@ -113,9 +113,9 @@ func (s *BatchJobHelper) UploadBatchJobOperations(jobOperations []interface{}, u
 			return errors.New(fmt.Sprintf("Invalid response received. %v received. Body: %v", response.StatusCode, string(respBody)))
 		}
 
-    	location := response.Header.Get("Location")
+		location := response.Header.Get("Location")
 
-		reqBody, err := xml.MarshalIndent(mutation,"  ", "  ")
+		reqBody, err := xml.MarshalIndent(mutation, "  ", "  ")
 		bodyLength := len(reqBody)
 
 		if err != nil {
@@ -123,18 +123,18 @@ func (s *BatchJobHelper) UploadBatchJobOperations(jobOperations []interface{}, u
 		}
 
 		req, err = http.NewRequest("PUT", location, bytes.NewReader(reqBody))
-		
+
 		if err != nil {
 			return err
 		}
-		
-		// Set headers for incremental upload
-    	req.Header.Set("Content-Type", "application/xml")
-    	req.Header.Set("Content-Length", string(bodyLength))
-    	req.Header.Set("Content-Range", fmt.Sprintf("bytes 0-%v/%v", bodyLength-1, bodyLength))
 
-    	resp, err := client.Do(req)
-		
+		// Set headers for incremental upload
+		req.Header.Set("Content-Type", "application/xml")
+		req.Header.Set("Content-Length", string(bodyLength))
+		req.Header.Set("Content-Range", fmt.Sprintf("bytes 0-%v/%v", bodyLength-1, bodyLength))
+
+		resp, err := client.Do(req)
+
 		if err != nil {
 			return err
 		}
@@ -151,7 +151,7 @@ func (s *BatchJobHelper) UploadBatchJobOperations(jobOperations []interface{}, u
 		}
 
 		// resp seems to only return 200's and there is no error handling, but if we happen to get invalid status lets try to do something with it
-		if resp.StatusCode != 200 {	
+		if resp.StatusCode != 200 {
 			return errors.New("Non-200 response returned Body: " + string(respBody))
 		}
 	}
@@ -162,13 +162,13 @@ func (s *BatchJobHelper) UploadBatchJobOperations(jobOperations []interface{}, u
 //	DownloadBatchJob download batch operations from an BatchJob.DownloadUrl from BatchJobService.Get
 //
 //	Example
-//	
+//
 //	mutateResult, err := batchJobHelper.DownloadBatchJob(*batchJobs.BatchJobs[0].DownloadUrl)
 //
 //	https://developers.google.com/adwords/api/docs/guides/batch-jobs?hl=en#download_the_batch_job_results_and_check_for_errors
 func (s *BatchJobHelper) DownloadBatchJob(url TemporaryUrl) (mutateResults []MutateResults, err error) {
 	resp, err := http.Get(url.Url)
-		
+
 	if err != nil {
 		return mutateResults, err
 	}
@@ -181,7 +181,7 @@ func (s *BatchJobHelper) DownloadBatchJob(url TemporaryUrl) (mutateResults []Mut
 	}
 
 	soapResp := struct {
-		MutateResults    []MutateResults   `xml:"rval"`
+		MutateResults []MutateResults `xml:"rval"`
 	}{}
 
 	err = xml.Unmarshal([]byte(respBody), &soapResp)
