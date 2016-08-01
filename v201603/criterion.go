@@ -59,6 +59,7 @@ type LanguageCriterion struct {
 // ParentLocations:
 type Location struct {
 	Id              int64      `xml:"id,omitempty"`
+	Type            string     `xml:"type,omitempty"`
 	LocationName    string     `xml:"locationName,omitempty"`
 	DisplayType     string     `xml:"displayType,omitempty"`
 	TargetingStatus string     `xml:"targetingStatus,omitempty"`
