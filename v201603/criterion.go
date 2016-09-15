@@ -42,9 +42,9 @@ type GenderCriterion struct {
 }
 
 type KeywordCriterion struct {
-	Id        int64  `xml:"id,omitempty"`
-	Text      string `xml:"text,omitempty"`      // Text: up to 80 characters and ten words
-	MatchType string `xml:"matchType,omitempty"` // MatchType:  "EXACT", "PHRASE", "BROAD"
+	Id        int64  `xml:"https://adwords.google.com/api/adwords/cm/v201603 id,omitempty"`
+	Text      string `xml:"https://adwords.google.com/api/adwords/cm/v201603 text,omitempty"`      // Text: up to 80 characters and ten words
+	MatchType string `xml:"https://adwords.google.com/api/adwords/cm/v201603 matchType,omitempty"` // MatchType:  "EXACT", "PHRASE", "BROAD"
 }
 
 type LanguageCriterion struct {
@@ -59,6 +59,7 @@ type LanguageCriterion struct {
 // ParentLocations:
 type Location struct {
 	Id              int64      `xml:"id,omitempty"`
+	Type            string     `xml:"type,omitempty"`
 	LocationName    string     `xml:"locationName,omitempty"`
 	DisplayType     string     `xml:"displayType,omitempty"`
 	TargetingStatus string     `xml:"targetingStatus,omitempty"`

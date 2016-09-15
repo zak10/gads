@@ -20,6 +20,8 @@ const (
 	baseRemarketingUrl    = "https://adwords.google.com/api/adwords/rm/" + version
 	rootReportDownloadUrl = "https://adwords.google.com/api/adwords/reportdownload/"
 	baseReportDownloadUrl = "https://adwords.google.com/api/adwords/reportdownload/" + version
+	rootTrafficUrl        = "https://adwords.google.com/api/adwords/o/"
+	baseTrafficUrl        = "https://adwords.google.com/api/adwords/o/" + version
 )
 
 type ServiceUrl struct {
@@ -73,7 +75,7 @@ var (
 	sharedCriterionServiceUrl       = ServiceUrl{baseUrl, "SharedCriterionService"}
 	sharedSetServiceUrl             = ServiceUrl{baseUrl, "SharedSetService"}
 	targetingIdeaServiceUrl         = ServiceUrl{baseUrl, "TargetingIdeaService"}
-	trafficEstimatorServiceUrl      = ServiceUrl{baseUrl, "TrafficEstimatorService"}
+	trafficEstimatorServiceUrl      = ServiceUrl{baseTrafficUrl, "TrafficEstimatorService"}
 )
 
 func (s ServiceUrl) String() string {
