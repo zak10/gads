@@ -162,6 +162,13 @@ type ProductPartition struct {
 	PartitionType     string           `xml:"partitionType,omitempty"`
 	ParentCriterionId int64            `xml:"parentCriterionId,omitempty"`
 	Dimension         ProductDimension `xml:"caseValue"`
+	Cpc               *Cpc             // This value is inherited from BiddableAdgroupCriterion
+}
+
+type ProductScope struct {
+	Id           int64              `xml:"id,omitempty"`
+	CriteriaType string             `xml:"type"`
+	Dimensions   []ProductDimension `xml:"dimensions"`
 }
 
 // RadiusDistanceUnits: KILOMETERS, MILES
@@ -279,6 +286,10 @@ func criterionUnmarshalXML(dec *xml.Decoder, start xml.StartElement) (Criterion,
 		return c, err
 	case "ProductPartition":
 		c := ProductPartition{}
+		err := dec.DecodeElement(&c, &start)
+		return c, err
+	case "ProductScope":
+		c := ProductScope{}
 		err := dec.DecodeElement(&c, &start)
 		return c, err
 	case "Proximity":
