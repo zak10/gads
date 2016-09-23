@@ -23,7 +23,7 @@ func main() {
 		gads.AdGroupAdOperations{
 			"ADD": {
 				gads.ExpandedTextAd{
-					AdGroupId:     11400713462,
+					AdGroupId:     1234567890,
 					FinalUrls:     []string{"https://classdo.com/en"},
 					Path1:         "path1",
 					Path2:         "path2",
