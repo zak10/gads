@@ -42,9 +42,4 @@ func main() {
 	}
 	fmt.Printf("%s\n", adsJSON)
 
-	// for _, criterion := range foundCriterions {
-	// 	criterionJSON, _ := json.MarshalIndent(criterion, "", "  ")
-	// 	fmt.Printf("%s\n", criterionJSON)
-	// }
-
 }
