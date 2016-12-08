@@ -240,7 +240,7 @@ func (mr *MutateResults) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) 
 				}
 				mr.Result = c
 			case "CampaignCriterion":
-				cc := CampaignCriterion{}
+				cc := CampaignCriterions{}
 				err := dec.DecodeElement(&cc, &start)
 				if err != nil {
 					return err
