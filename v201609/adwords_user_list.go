@@ -66,6 +66,7 @@ type MutateMembersOperations struct {
 type MutateMembersOperand struct {
 	UserListId int64    `xml:"userListId"`
 	DataType   string   `xml:"dataType"`
+	RemoveAll  *bool    `xml:"removeAll"`
 	Members    []string `xml:"members"`
 }
 
