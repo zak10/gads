@@ -6,7 +6,6 @@ import (
 
 type ManagedCustomer struct {
 	Name                  string         `xml:"name"`
-	CompanyName           string         `xml:"companyName,omitempty"`
 	CustomerId            int64          `xml:"customerId,omitempty"`
 	CanManageClients      bool           `xml:"canManageClients,omitempty"`
 	CurrencyCode          string         `xml:"currencyCode"`
