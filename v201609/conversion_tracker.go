@@ -1,9 +1,8 @@
 package v201609
 
 type ConversionTrackingSettings struct {
-	ConversionOptimizerMode            string `xml:conversionOptimizerMode`
-	EffectiveConversionTrackingId      int64  `xml:effectiveConversionTrackingId`
-	UsesCrossAccountConversionTracking bool   `xml:usesCrossAccountConversionTracking`
+	EffectiveConversionTrackingId      int64 `xml:effectiveConversionTrackingId`
+	UsesCrossAccountConversionTracking bool  `xml:usesCrossAccountConversionTracking`
 }
 
 type ConversionTrackerService struct {
