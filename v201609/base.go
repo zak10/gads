@@ -74,7 +74,7 @@ var (
 	reportDownloadServiceUrl        = ServiceUrl{baseReportDownloadUrl, ""}
 	sharedCriterionServiceUrl       = ServiceUrl{baseUrl, "SharedCriterionService"}
 	sharedSetServiceUrl             = ServiceUrl{baseUrl, "SharedSetService"}
-	targetingIdeaServiceUrl         = ServiceUrl{baseUrl, "TargetingIdeaService"}
+	targetingIdeaServiceUrl         = ServiceUrl{baseTrafficUrl, "TargetingIdeaService"}
 	trafficEstimatorServiceUrl      = ServiceUrl{baseTrafficUrl, "TrafficEstimatorService"}
 )
 
@@ -114,8 +114,8 @@ type OrderBy struct {
 }
 
 type Paging struct {
-	Offset int64 `xml:"startIndex"`
-	Limit  int64 `xml:"numberResults"`
+	Offset int64 `xml:"https://adwords.google.com/api/adwords/cm/v201609 startIndex"`
+	Limit  int64 `xml:"https://adwords.google.com/api/adwords/cm/v201609 numberResults"`
 }
 
 type Selector struct {
