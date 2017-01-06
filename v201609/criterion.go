@@ -48,9 +48,9 @@ type KeywordCriterion struct {
 }
 
 type LanguageCriterion struct {
-	Id   int64  `xml:"id,omitempty"`
-	Code string `xml:"code,omitempty"`
-	Name string `xml:"name,omitempty"`
+	Id   int64  `xml:"https://adwords.google.com/api/adwords/cm/v201609 id,omitempty"`
+	Code string `xml:"https://adwords.google.com/api/adwords/cm/v201609 code,omitempty"`
+	Name string `xml:"https://adwords.google.com/api/adwords/cm/v201609 name,omitempty"`
 }
 
 // LocationName:
@@ -58,12 +58,12 @@ type LanguageCriterion struct {
 // TargetingStatus: ACTIVE, OBSOLETE, PHASING_OUT
 // ParentLocations:
 type Location struct {
-	Id              int64      `xml:"id,omitempty"`
-	Type            string     `xml:"type,omitempty"`
-	LocationName    string     `xml:"locationName,omitempty"`
-	DisplayType     string     `xml:"displayType,omitempty"`
-	TargetingStatus string     `xml:"targetingStatus,omitempty"`
-	ParentLocations []Location `xml:"parentLocations,omitempty"`
+	Id              int64      `xml:"https://adwords.google.com/api/adwords/cm/v201609 id,omitempty"`
+	Type            string     `xml:"https://adwords.google.com/api/adwords/cm/v201609 type,omitempty"`
+	LocationName    string     `xml:"https://adwords.google.com/api/adwords/cm/v201609 locationName,omitempty"`
+	DisplayType     string     `xml:"https://adwords.google.com/api/adwords/cm/v201609 displayType,omitempty"`
+	TargetingStatus string     `xml:"https://adwords.google.com/api/adwords/cm/v201609 targetingStatus,omitempty"`
+	ParentLocations []Location `xml:"https://adwords.google.com/api/adwords/cm/v201609 parentLocations,omitempty"`
 }
 
 // MobileAppCategoryId:
