@@ -137,6 +137,11 @@ type AWQLQuery struct {
 // MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
 type DayOfWeek string
 
+// https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupExtensionSettingService.MinuteOfHour
+// Minutes in an hour. Currently only 0, 15, 30, and 45 are supported
+// ZERO, FIFTEEN, THIRTY, FORTY_FIVE
+type MinuteOfHour string
+
 // error parsers
 func selectorError() (err error) {
 	return err
