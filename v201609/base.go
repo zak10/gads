@@ -132,6 +132,11 @@ type AWQLQuery struct {
 	Query   string `xml:"query"`
 }
 
+// https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupExtensionSettingService.DayOfWeek
+// Days of the week.
+// MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
+type DayOfWeek string
+
 // error parsers
 func selectorError() (err error) {
 	return err
