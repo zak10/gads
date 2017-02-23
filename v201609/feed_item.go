@@ -35,3 +35,10 @@ type FeedItemSchedule struct {
 	EndHour     int          `xml:"https://adwords.google.com/api/adwords/cm/v201609 endHour,omitempty"`
 	EndMinute   MinuteOfHour `xml:"https://adwords.google.com/api/adwords/cm/v201609 endMinute,omitempty"`
 }
+
+// https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupExtensionSettingService.FeedItemCampaignTargeting
+// Specifies the campaign the request context must match in order for the feed item to be considered eligible for serving (aka the targeted campaign).
+// E.g., if the below campaign targeting is set to campaignId = X, then the feed item can only serve under campaign X.
+type FeedItemCampaignTargeting struct {
+	TargetingCampaignId int `xml:"https://adwords.google.com/api/adwords/cm/v201609 TargetingCampaignId,omitempty"`
+}
