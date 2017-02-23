@@ -55,3 +55,44 @@ type FeedItemAdGroupTargeting struct {
 type FeedItemGeoRestriction struct {
 	GeoRestriction GeoRestriction `xml:"https://adwords.google.com/api/adwords/cm/v201609 geoRestriction,omitempty"`
 }
+
+// https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupExtensionSettingService.FeedItemPolicyData
+// Contains offline-validation and approval results for a given FeedItem and FeedMapping.
+// Each validation data indicates any issues found on the feed item when used in the context of the feed mapping.
+type FeedItemPolicyData struct {
+	PolicyData
+	PlaceholderType           int                               `xml:"https://adwords.google.com/api/adwords/cm/v201609 placeholderType,omitempty"`
+	FeedMappingId             int64                             `xml:"https://adwords.google.com/api/adwords/cm/v201609 feedMappingId,omitempty"`
+	ValidationStatus          FeedItemValidationStatus          `xml:"https://adwords.google.com/api/adwords/cm/v201609 validationStatus,omitempty"`
+	ApprovalStatus            FeedItemApprovalStatus            `xml:"https://adwords.google.com/api/adwords/cm/v201609 approvalStatus,omitempty"`
+	ValidationErrors          []FeedItemAttributeError          `xml:"https://adwords.google.com/api/adwords/cm/v201609 validationErrors,omitempty"`
+	QualityApprovalStatus     FeedItemQualityApprovalStatus     `xml:"https://adwords.google.com/api/adwords/cm/v201609 qualityApprovalStatus,omitempty"`
+	QualityDisapprovalReasons FeedItemQualityDisapprovalReasons `xml:"https://adwords.google.com/api/adwords/cm/v201609 qualityDisapprovalReasons,omitempty"`
+}
+
+// https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupExtensionSettingService.FeedItemValidationStatus
+// Validation status of a FeedItem
+// UNCHECKED, ERROR, VALID
+type FeedItemValidationStatus string
+
+// https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupExtensionSettingService.FeedItemApprovalStatus
+// Feed item approval status
+// UNCHECKED, APPROVED, DISAPPROVED
+type FeedItemApprovalStatus string
+
+// https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupExtensionSettingService.FeedItemAttributeError
+// Contains validation error details for a set of feed attributes
+type FeedItemAttributeError struct {
+	FeedAttributeIds    []int64 `xml:"https://adwords.google.com/api/adwords/cm/v201609 feedAttributeIds,omitempty"`
+	ValidationErrorCode int     `xml:"https://adwords.google.com/api/adwords/cm/v201609 validationErrorCode,omitempty"`
+	ErrorInformation    string  `xml:"https://adwords.google.com/api/adwords/cm/v201609 errorInformation,omitempty"`
+}
+
+// https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupExtensionSettingService.FeedItemQualityApprovalStatus
+// Feed item quality evaluation approval status
+// UNCHECKED, APPROVED, DISAPPROVED
+type FeedItemQualityApprovalStatus string
+
+// https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupExtensionSettingService.FeedItemQualityDisapprovalReasons
+// Feed item quality evaluation disapproval reasons.
+type FeedItemQualityDisapprovalReasons string
