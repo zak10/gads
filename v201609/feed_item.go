@@ -49,3 +49,9 @@ type FeedItemCampaignTargeting struct {
 type FeedItemAdGroupTargeting struct {
 	TargetingAdGroupId int64 `xml:"https://adwords.google.com/api/adwords/cm/v201609 TargetingAdGroupId,omitempty"`
 }
+
+// https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupExtensionSettingService.FeedItemGeoRestriction
+// Represents a FeedItem geo restriction.
+type FeedItemGeoRestriction struct {
+	GeoRestriction GeoRestriction `xml:"https://adwords.google.com/api/adwords/cm/v201609 geoRestriction,omitempty"`
+}

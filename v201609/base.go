@@ -142,6 +142,11 @@ type DayOfWeek string
 // ZERO, FIFTEEN, THIRTY, FORTY_FIVE
 type MinuteOfHour string
 
+// https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupExtensionSettingService.GeoRestriction
+// A restriction used to determine if the request context's geo should be matched.
+// UNKNOWN, LOCATION_OF_PRESENCE
+type GeoRestriction string
+
 // error parsers
 func selectorError() (err error) {
 	return err
