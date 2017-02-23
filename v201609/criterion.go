@@ -48,7 +48,7 @@ type KeywordCriterion struct {
 }
 
 type Keyword struct {
-	CriterionType
+	CriterionT
 	Text      string           `xml:"https://adwords.google.com/api/adwords/cm/v201609 text,omitempty"`
 	MatchType KeywordMatchType `xml:"https://adwords.google.com/api/adwords/cm/v201609 matchType,omitempty"`
 }
@@ -70,23 +70,29 @@ type CriterionT struct {
 // The types of criteria
 type CriterionType string
 
+// https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupExtensionSettingService.LocationTargetingStatus
+// Enum that represents the different Targeting Status values for a Location criterion.
+// ACTIVE, OBSOLETE, PHASING_OUT
+type LocationTargetingStatus string
+
 type LanguageCriterion struct {
 	Id   int64  `xml:"https://adwords.google.com/api/adwords/cm/v201609 id,omitempty"`
 	Code string `xml:"https://adwords.google.com/api/adwords/cm/v201609 code,omitempty"`
 	Name string `xml:"https://adwords.google.com/api/adwords/cm/v201609 name,omitempty"`
 }
 
+// https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupExtensionSettingService.Location
+// Represents Location criterion.  A criterion of this type can only be created using an ID.
 // LocationName:
 // DisplayType:
 // TargetingStatus: ACTIVE, OBSOLETE, PHASING_OUT
 // ParentLocations:
 type Location struct {
-	Id              int64      `xml:"https://adwords.google.com/api/adwords/cm/v201609 id,omitempty"`
-	Type            string     `xml:"https://adwords.google.com/api/adwords/cm/v201609 type,omitempty"`
-	LocationName    string     `xml:"https://adwords.google.com/api/adwords/cm/v201609 locationName,omitempty"`
-	DisplayType     string     `xml:"https://adwords.google.com/api/adwords/cm/v201609 displayType,omitempty"`
-	TargetingStatus string     `xml:"https://adwords.google.com/api/adwords/cm/v201609 targetingStatus,omitempty"`
-	ParentLocations []Location `xml:"https://adwords.google.com/api/adwords/cm/v201609 parentLocations,omitempty"`
+	CriterionT
+	LocationName    string                  `xml:"https://adwords.google.com/api/adwords/cm/v201609 locationName,omitempty"`
+	DisplayType     string                  `xml:"https://adwords.google.com/api/adwords/cm/v201609 displayType,omitempty"`
+	TargetingStatus LocationTargetingStatus `xml:"https://adwords.google.com/api/adwords/cm/v201609 targetingStatus,omitempty"`
+	ParentLocations []Location              `xml:"https://adwords.google.com/api/adwords/cm/v201609 parentLocations,omitempty"`
 }
 
 // MobileAppCategoryId:
