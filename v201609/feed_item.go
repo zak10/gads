@@ -40,5 +40,12 @@ type FeedItemSchedule struct {
 // Specifies the campaign the request context must match in order for the feed item to be considered eligible for serving (aka the targeted campaign).
 // E.g., if the below campaign targeting is set to campaignId = X, then the feed item can only serve under campaign X.
 type FeedItemCampaignTargeting struct {
-	TargetingCampaignId int `xml:"https://adwords.google.com/api/adwords/cm/v201609 TargetingCampaignId,omitempty"`
+	TargetingCampaignId int64 `xml:"https://adwords.google.com/api/adwords/cm/v201609 TargetingCampaignId,omitempty"`
+}
+
+// https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupExtensionSettingService.FeedItemAdGroupTargeting
+// Specifies the adgroup the request context must match in order for the feed item to be considered eligible for serving (aka the targeted adgroup).
+// E.g., if the below adgroup targeting is set to adgroup = X, then the feed item can only serve under adgroup X.
+type FeedItemAdGroupTargeting struct {
+	TargetingAdGroupId int64 `xml:"https://adwords.google.com/api/adwords/cm/v201609 TargetingAdGroupId,omitempty"`
 }
