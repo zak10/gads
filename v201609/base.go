@@ -147,6 +147,19 @@ type MinuteOfHour string
 // UNKNOWN, LOCATION_OF_PRESENCE
 type GeoRestriction string
 
+// https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupExtensionSettingService.PolicyData
+// Approval and policy information attached to an entity.
+type PolicyData struct {
+	DisapprovalReasons []DisapprovalReason `xml:"https://adwords.google.com/api/adwords/cm/v201609 disapprovalReasons,omitempty"`
+	PolicyDataType     string              `xml:"https://adwords.google.com/api/adwords/cm/v201609 PolicyData.Type,omitempty"`
+}
+
+// https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupExtensionSettingService.DisapprovalReason
+// Container for information about why an AdWords entity was disapproved.
+type DisapprovalReason struct {
+	ShortName string `xml:"https://adwords.google.com/api/adwords/cm/v201609 shortName,omitempty"`
+}
+
 // error parsers
 func selectorError() (err error) {
 	return err
