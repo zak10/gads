@@ -4,6 +4,12 @@ package v201609
 // A setting specifying when and which extensions should serve at a given level (customer, campaign, or ad group).
 type ExtensionSetting struct {
 	PlatformRestrictions ExtensionSettingPlatform `xml:"https://adwords.google.com/api/adwords/cm/v201609 platformRestrictions,omitempty"`
+	Extensions           ExtensionFeedItem        `xml:"https://adwords.google.com/api/adwords/cm/v201609 extensions,omitempty"`
+}
+
+type ExtensionSetting4CallFeed struct {
+	PlatformRestrictions ExtensionSettingPlatform `xml:"https://adwords.google.com/api/adwords/cm/v201609 platformRestrictions,omitempty"`
+	Extensions           CallFeedItem             `xml:"https://adwords.google.com/api/adwords/cm/v201609 extensions,omitempty"`
 }
 
 // https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupExtensionSettingService.ExtensionSetting.Platform
@@ -29,4 +35,16 @@ type ExtensionFeedItem struct {
 	GeoTargetingRestriction FeedItemGeoRestriction    `xml:"https://adwords.google.com/api/adwords/cm/v201609 geoTargetingRestriction,omitempty"`
 	PolicyData              []FeedItemPolicyData      `xml:"https://adwords.google.com/api/adwords/cm/v201609 policyData,omitempty"`
 	ExtensionFeedItemType   string                    `xml:"https://adwords.google.com/api/adwords/cm/v201609 ExtensionFeedItem.Type,omitempty"`
+}
+
+// https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupExtensionSettingService.CallFeedItem
+// Represents a Call extension.
+type CallFeedItem struct {
+	ExtensionFeedItem
+
+	CallPhoneNumber               string             `xml:"https://adwords.google.com/api/adwords/cm/v201609 callPhoneNumber,omitempty"`
+	CallCountryCode               string             `xml:"https://adwords.google.com/api/adwords/cm/v201609 callCountryCode,omitempty"`
+	CallTracking                  bool               `xml:"https://adwords.google.com/api/adwords/cm/v201609 callTracking,omitempty"`
+	CallConversionType            CallConversionType `xml:"https://adwords.google.com/api/adwords/cm/v201609 callConversionType,omitempty"`
+	DisableCallConversionTracking bool               `xml:"https://adwords.google.com/api/adwords/cm/v201609 disableCallConversionTracking,omitempty"`
 }
