@@ -96,3 +96,9 @@ type FeedItemQualityApprovalStatus string
 // https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupExtensionSettingService.FeedItemQualityDisapprovalReasons
 // Feed item quality evaluation disapproval reasons.
 type FeedItemQualityDisapprovalReasons string
+
+// https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupExtensionSettingService.CallConversionType
+// Conversion type for a call extension.
+type CallConversionType struct {
+	ConversionTypeId int64 `xml:"https://adwords.google.com/api/adwords/cm/v201609 conversionTypeId,omitempty"`
+}
