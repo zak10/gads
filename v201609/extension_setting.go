@@ -2,7 +2,7 @@ package v201609
 
 // https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupExtensionSettingService.ExtensionSetting
 // A setting specifying when and which extensions should serve at a given level (customer, campaign, or ad group).
-type ExtensionSetting4Call struct {
+type ExtensionSetting_Call struct {
 	PlatformRestrictions ExtensionSettingPlatform `xml:"https://adwords.google.com/api/adwords/cm/v201609 platformRestrictions,omitempty"`
 	Extensions           CallFeedItem             `xml:"https://adwords.google.com/api/adwords/cm/v201609 extensions,omitempty"`
 }
