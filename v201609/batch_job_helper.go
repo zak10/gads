@@ -104,7 +104,7 @@ func (s *BatchJobHelper) UploadBatchJobOperations(jobOperations []interface{}, u
 		}
 
 		// If we got a valid upload url it will be 201
-		if response.StatusCode != 201 {
+		if response.StatusCode != http.StatusCreated {
 			respBody, err := ioutil.ReadAll(response.Body)
 
 			if err != nil {
@@ -140,6 +140,7 @@ func (s *BatchJobHelper) UploadBatchJobOperations(jobOperations []interface{}, u
 		}
 
 		respBody, err := ioutil.ReadAll(resp.Body)
+		println(string(reqBody))
 
 		if err != nil {
 			return err
@@ -151,7 +152,7 @@ func (s *BatchJobHelper) UploadBatchJobOperations(jobOperations []interface{}, u
 		}
 
 		// resp seems to only return 200's and there is no error handling, but if we happen to get invalid status lets try to do something with it
-		if resp.StatusCode != 200 {
+		if resp.StatusCode != http.StatusOK {
 			return errors.New("Non-200 response returned Body: " + string(respBody))
 		}
 	}

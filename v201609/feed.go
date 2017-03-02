@@ -11,7 +11,7 @@ func NewFeedService(auth *Auth) *FeedService {
 }
 
 // https://developers.google.com/adwords/api/docs/reference/v201609/FeedService
-func (s *FeedService) Query(query string) (page []FeedPage, totalCount int64, err error) {
+func (s *FeedService) Query(query string) (page []Feed, totalCount int64, err error) {
 	respBody, err := s.Auth.request(
 		feedServiceUrl,
 		"query",
@@ -28,15 +28,14 @@ func (s *FeedService) Query(query string) (page []FeedPage, totalCount int64, er
 	}
 
 	getResp := struct {
-		Size int64      `xml:"rval>totalNumEntries"`
-		page []FeedPage `xml:"rval>entries"`
+		Size  int64  `xml:"rval>totalNumEntries"`
+		Feeds []Feed `xml:"rval>entries"`
 	}{}
-	println(string(respBody))
 	err = xml.Unmarshal([]byte(respBody), &getResp)
 	if err != nil {
 		return
 	}
-	return getResp.page, getResp.Size, err
+	return getResp.Feeds, getResp.Size, err
 }
 
 // https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupExtensionSettingService.Feed.Type
@@ -62,10 +61,6 @@ type FeedAttributeType string
 // https://developers.google.com/adwords/api/docs/reference/v201609/FeedService.SystemFeedGenerationData
 type SystemFeedGenerationData struct {
 	SystemFeedGenerationDataType string `xml:"https://adwords.google.com/api/adwords/cm/v201609 SystemFeedGenerationData.Type,omitempty"`
-}
-
-type FeedPage struct {
-	Entries []Feed `xml:"https://adwords.google.com/api/adwords/cm/v201609 entries,omitempty"`
 }
 
 // https://developers.google.com/adwords/api/docs/reference/v201609/FeedService.FeedAttribute

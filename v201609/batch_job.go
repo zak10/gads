@@ -266,6 +266,8 @@ func (mr *MutateResults) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) 
 // getXsiType validates the schema instance type and returns it since Bulk Mutate requires it to be set
 func getXsiType(objectName string) (string, bool) {
 	switch {
+	case strings.Contains(objectName, "AdGroupExtensionSettingOperation"):
+		return "AdGroupExtensionSettingOperation", true
 	case strings.Contains(objectName, "AdGroupAdLabelOperation"):
 		return "AdGroupAdLabelOperation", true
 	case strings.Contains(objectName, "AdGroupAdOperation"):

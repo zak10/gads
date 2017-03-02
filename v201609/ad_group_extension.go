@@ -1,6 +1,9 @@
 package v201609
 
-import "encoding/xml"
+import (
+	"encoding/xml"
+	"fmt"
+)
 
 // https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupExtensionSettingService#query
 type AdGroupExtensionSettingService struct {
@@ -11,22 +14,18 @@ func NewAdGroupExtensionSettingService(auth *Auth) *AdGroupExtensionSettingServi
 	return &AdGroupExtensionSettingService{Auth: *auth}
 }
 
-// This field can be selected using the value "Extensions".
-type ExtensionType int
+// https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupExtensionSettingService.AdGroupExtensionSetting
+// An AdGroupExtensionSetting is used to add or modify extensions being served for the specified ad group.
+type AdGroupExtensionSetting struct {
+	AdGroupId        int64            `xml:"https://adwords.google.com/api/adwords/cm/v201609 adGroupId,omitempty"`
+	ExtensionType    FeedType         `xml:"https://adwords.google.com/api/adwords/cm/v201609 extensionType,omitempty"`
+	ExtensionSetting ExtensionSetting `xml:"https://adwords.google.com/api/adwords/cm/v201609 extensionSetting,omitempty"`
+}
 
-const (
-	ExtensionFeedItemType ExtensionType = iota
-	AppFeedItemType
-	CallFeedItemType
-	CalloutFeedItemType
-	PriceFeedItemType
-	ReviewFeedItem
-	SitelinkFeedItemType
-	StructuredSnippetFeedItemType
-)
+type AdGroupExtensionSettingOperations map[string][]AdGroupExtensionSetting
 
 // https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupExtensionSettingService#query
-func (s *AdGroupExtensionSettingService) Query(query string) (settings []AdGroupExtensionSetting_Call, totalCount int64, err error) {
+func (s *AdGroupExtensionSettingService) Query(query string) (settings []AdGroupExtensionSetting, totalCount int64, err error) {
 	respBody, err := s.Auth.request(
 		adGroupExtensionSettingServiceUrl,
 		"query",
@@ -38,15 +37,15 @@ func (s *AdGroupExtensionSettingService) Query(query string) (settings []AdGroup
 			Query: query,
 		},
 	)
-
 	if err != nil {
 		return
 	}
 
 	getResp := struct {
-		Size     int64                          `xml:"rval>totalNumEntries"`
-		Settings []AdGroupExtensionSetting_Call `xml:"rval>entries"`
+		Size     int64                     `xml:"rval>totalNumEntries"`
+		Settings []AdGroupExtensionSetting `xml:"rval>entries"`
 	}{}
+	println(string(respBody))
 
 	err = xml.Unmarshal([]byte(respBody), &getResp)
 	if err != nil {
@@ -55,15 +54,31 @@ func (s *AdGroupExtensionSettingService) Query(query string) (settings []AdGroup
 	return getResp.Settings, getResp.Size, err
 }
 
+func identifyExtention(setting *AdGroupExtensionSetting) (err error) {
+	switch setting.ExtensionType {
+	case "CALL":
+		for _, ext := range setting.ExtensionSetting.Extensions {
+			item := getCallFeedItem(ext.(map[string]interface{}))
+			setting.ExtensionSetting.Extensions = append(setting.ExtensionSetting.Extensions, item)
+		}
+	default:
+		err = fmt.Errorf("unknown ExtensionType type %#v", setting.ExtensionType)
+	}
+	return
+}
+
 // https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupExtensionSettingService#mutate
-func (s *AdGroupExtensionSettingService) Mutate(settingsOperations AdGroupExtensionSettingOperations_Call) (settings []AdGroupExtensionSetting_Call, err error) {
+func (s *AdGroupExtensionSettingService) Mutate(settingsOperations AdGroupExtensionSettingOperations) (settings []AdGroupExtensionSetting, err error) {
 	type settingOperations struct {
-		Action  string                       `xml:"operator"`
-		Setting AdGroupExtensionSetting_Call `xml:"operand"`
+		Action  string                  `xml:"operator"`
+		Setting AdGroupExtensionSetting `xml:"operand"`
 	}
 	operations := []settingOperations{}
 	for action, settings := range settingsOperations {
 		for _, setting := range settings {
+			if err = identifyExtention(&setting); err != nil {
+				return settings, err
+			}
 			operations = append(operations,
 				settingOperations{
 					Action:  action,
@@ -80,13 +95,15 @@ func (s *AdGroupExtensionSettingService) Mutate(settingsOperations AdGroupExtens
 			Space: baseUrl,
 			Local: "mutate",
 		},
-		Ops: operations}
+		Ops: operations,
+	}
+
 	respBody, err := s.Auth.request(adGroupExtensionSettingServiceUrl, "mutate", mutation)
 	if err != nil {
 		return settings, err
 	}
 	mutateResp := struct {
-		Settings []AdGroupExtensionSetting_Call `xml:"rval>value"`
+		Settings []AdGroupExtensionSetting `xml:"rval>value"`
 	}{}
 	err = xml.Unmarshal(respBody, &mutateResp)
 	if err != nil {
@@ -95,13 +112,3 @@ func (s *AdGroupExtensionSettingService) Mutate(settingsOperations AdGroupExtens
 
 	return mutateResp.Settings, err
 }
-
-// https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupExtensionSettingService.AdGroupExtensionSetting
-// An AdGroupExtensionSetting is used to add or modify extensions being served for the specified ad group.
-type AdGroupExtensionSetting_Call struct {
-	AdGroupId        int64                 `xml:"https://adwords.google.com/api/adwords/cm/v201609 adGroupId,omitempty"`
-	ExtensionType    FeedType              `xml:"https://adwords.google.com/api/adwords/cm/v201609 extensionType,omitempty"`
-	ExtensionSetting ExtensionSetting_Call `xml:"https://adwords.google.com/api/adwords/cm/v201609 extensionSetting,omitempty"`
-}
-
-type AdGroupExtensionSettingOperations_Call map[string][]AdGroupExtensionSetting_Call
