@@ -253,6 +253,13 @@ func (mr *MutateResults) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) 
 					return err
 				}
 				mr.Result = cc
+			case "CampaignExtensionSetting":
+				cl := CampaignExtensionSetting{}
+				err := dec.DecodeElement(&cl, &start)
+				if err != nil {
+					return err
+				}
+				mr.Result = cl
 			case "CampaignLabel":
 				cl := CampaignLabel{}
 				err := dec.DecodeElement(&cl, &start)
