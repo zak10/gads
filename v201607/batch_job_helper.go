@@ -184,7 +184,7 @@ func (s *BatchJobHelper) DownloadBatchJob(url TemporaryUrl) (mutateResults []Mut
 		MutateResults []MutateResults `xml:"rval"`
 	}{}
 
-	err = xml.Unmarshal([]byte(respBody), &soapResp)
+	err = xml.Unmarshal(respBody, &soapResp)
 	if err != nil {
 		return mutateResults, err
 	}

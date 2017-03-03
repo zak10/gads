@@ -218,6 +218,13 @@ func (mr *MutateResults) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) 
 					return err
 				}
 				mr.Result = agcl
+			case "AdGroupExtensionSetting":
+				cl := AdGroupExtensionSetting{}
+				err := dec.DecodeElement(&cl, &start)
+				if err != nil {
+					return err
+				}
+				mr.Result = cl
 			case "AdGroupLabel":
 				agl := AdGroupLabel{}
 				err := dec.DecodeElement(&agl, &start)
