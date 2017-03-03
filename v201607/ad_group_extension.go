@@ -45,7 +45,6 @@ func (s *AdGroupExtensionSettingService) Query(query string) (settings []AdGroup
 		Size     int64                     `xml:"rval>totalNumEntries"`
 		Settings []AdGroupExtensionSetting `xml:"rval>entries"`
 	}{}
-	println(string(respBody))
 
 	err = xml.Unmarshal([]byte(respBody), &getResp)
 	if err != nil {
