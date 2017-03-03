@@ -53,6 +53,19 @@ func (s *AdGroupExtensionSettingService) Query(query string) (settings []AdGroup
 	return getResp.Settings, getResp.Size, err
 }
 
+func identifyExtention(setting *AdGroupExtensionSetting) (err error) {
+	switch setting.ExtensionType {
+	case "CALL":
+		for _, ext := range setting.ExtensionSetting.Extensions {
+			item := getCallFeedItem(ext.(map[string]interface{}))
+			setting.ExtensionSetting.Extensions = append(setting.ExtensionSetting.Extensions, item)
+		}
+	default:
+		err = fmt.Errorf("unknown ExtensionType type %#v", setting.ExtensionType)
+	}
+	return
+}
+
 // https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupExtensionSettingService#mutate
 func (s *AdGroupExtensionSettingService) Mutate(settingsOperations AdGroupExtensionSettingOperations) (settings []AdGroupExtensionSetting, err error) {
 	type settingOperations struct {
@@ -62,7 +75,7 @@ func (s *AdGroupExtensionSettingService) Mutate(settingsOperations AdGroupExtens
 	operations := []settingOperations{}
 	for action, settings := range settingsOperations {
 		for _, setting := range settings {
-			if err = identifyAdGroupExtention(&setting); err != nil {
+			if err = identifyExtention(&setting); err != nil {
 				return settings, err
 			}
 			operations = append(operations,
@@ -97,17 +110,4 @@ func (s *AdGroupExtensionSettingService) Mutate(settingsOperations AdGroupExtens
 	}
 
 	return mutateResp.Settings, err
-}
-
-func identifyAdGroupExtention(setting *AdGroupExtensionSetting) (err error) {
-	switch setting.ExtensionType {
-	case "CALL":
-		for _, ext := range setting.ExtensionSetting.Extensions {
-			item := getCallFeedItem(ext.(map[string]interface{}))
-			setting.ExtensionSetting.Extensions = append(setting.ExtensionSetting.Extensions, item)
-		}
-	default:
-		err = fmt.Errorf("unknown ExtensionType type %#v", setting.ExtensionType)
-	}
-	return
 }
