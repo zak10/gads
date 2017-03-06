@@ -17,12 +17,55 @@ func NewAdGroupExtensionSettingService(auth *Auth) *AdGroupExtensionSettingServi
 // https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupExtensionSettingService.AdGroupExtensionSetting
 // An AdGroupExtensionSetting is used to add or modify extensions being served for the specified ad group.
 type AdGroupExtensionSetting struct {
-	AdGroupId        int64            `xml:"https://adwords.google.com/api/adwords/cm/v201609 adGroupId,omitempty"`
-	ExtensionType    FeedType         `xml:"https://adwords.google.com/api/adwords/cm/v201609 extensionType,omitempty"`
-	ExtensionSetting ExtensionSetting `xml:"https://adwords.google.com/api/adwords/cm/v201609 extensionSetting,omitempty"`
+	AdGroupId        int64                   `xml:"https://adwords.google.com/api/adwords/cm/v201609 adGroupId,omitempty"`
+	ExtensionType    FeedType                `xml:"https://adwords.google.com/api/adwords/cm/v201609 extensionType,omitempty"`
+	ExtensionSetting adGroupExtensionSetting `xml:"https://adwords.google.com/api/adwords/cm/v201607 extensionSetting,omitempty"`
 }
 
 type AdGroupExtensionSettingOperations map[string][]AdGroupExtensionSetting
+
+type adGroupExtensionSetting ExtensionSetting
+
+func (s adGroupExtensionSetting) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	start.Attr = append(
+		start.Attr,
+		xml.Attr{
+			xml.Name{"http://www.w3.org/2001/XMLSchema-instance", "type"},
+			"AdGroupExtensionSetting",
+		},
+	)
+	e.EncodeToken(start)
+	e.EncodeElement(&s.PlatformRestrictions, xml.StartElement{Name: xml.Name{
+		"https://adwords.google.com/api/adwords/cm/v201607",
+		"platformRestrictions"}})
+	extensionsMarshalXML(s.Extensions, e)
+	e.EncodeToken(start.End())
+	return nil
+}
+
+func (s *adGroupExtensionSetting) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) (err error) {
+	for token, err := dec.Token(); err == nil; token, err = dec.Token() {
+		if err != nil {
+			return err
+		}
+		switch start := token.(type) {
+		case xml.StartElement:
+			switch start.Name.Local {
+			case "platformRestrictions":
+				if err := dec.DecodeElement(&s.PlatformRestrictions, &start); err != nil {
+					return err
+				}
+			case "extensions":
+				extension, err := extensionsUnmarshalXML(dec, start)
+				if err != nil {
+					return err
+				}
+				s.Extensions = append(s.Extensions, extension)
+			}
+		}
+	}
+	return nil
+}
 
 // https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupExtensionSettingService#query
 func (s *AdGroupExtensionSettingService) Query(query string) (settings []AdGroupExtensionSetting, totalCount int64, err error) {

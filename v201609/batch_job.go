@@ -300,6 +300,8 @@ func getXsiType(objectName string) (string, bool) {
 		return "BudgetOperation", true
 	case strings.Contains(objectName, "CampaignAdExtensionOperation"):
 		return "CampaignAdExtensionOperation", true
+	case strings.Contains(objectName, "CampaignExtensionSettingOperation"):
+		return "CampaignExtensionSettingOperation", true
 	case strings.Contains(objectName, "CampaignCriterionOperation"):
 		return "CampaignCriterionOperation", true
 	case strings.Contains(objectName, "CampaignLabelOperation"):

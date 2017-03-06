@@ -16,9 +16,52 @@ func NewCampaignExtensionService(auth *Auth) *CampaignExtensionSettingService {
 // https://developers.google.com/adwords/api/docs/reference/v201607/CampaignExtensionSettingService.CampaignExtensionSetting
 // A CampaignExtensionSetting is used to add or modify extensions being served for the specified campaign.
 type CampaignExtensionSetting struct {
-	CampaignId       int64            `xml:"https://adwords.google.com/api/adwords/cm/v201607 campaignId,omitempty"`
-	ExtensionType    FeedType         `xml:"https://adwords.google.com/api/adwords/cm/v201607 extensionType,omitempty"`
-	ExtensionSetting ExtensionSetting `xml:"https://adwords.google.com/api/adwords/cm/v201607 extensionSetting,omitempty"`
+	CampaignId       int64                    `xml:"https://adwords.google.com/api/adwords/cm/v201607 campaignId,omitempty"`
+	ExtensionType    FeedType                 `xml:"https://adwords.google.com/api/adwords/cm/v201607 extensionType,omitempty"`
+	ExtensionSetting campaignExtensionSetting `xml:"https://adwords.google.com/api/adwords/cm/v201607 extensionSetting,omitempty"`
+}
+
+type campaignExtensionSetting ExtensionSetting
+
+func (s campaignExtensionSetting) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	start.Attr = append(
+		start.Attr,
+		xml.Attr{
+			xml.Name{"http://www.w3.org/2001/XMLSchema-instance", "type"},
+			"CampaignExtensionSetting",
+		},
+	)
+	e.EncodeToken(start)
+	e.EncodeElement(&s.PlatformRestrictions, xml.StartElement{Name: xml.Name{
+		"https://adwords.google.com/api/adwords/cm/v201607",
+		"platformRestrictions"}})
+	extensionsMarshalXML(s.Extensions, e)
+	e.EncodeToken(start.End())
+	return nil
+}
+
+func (s *campaignExtensionSetting) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) (err error) {
+	for token, err := dec.Token(); err == nil; token, err = dec.Token() {
+		if err != nil {
+			return err
+		}
+		switch start := token.(type) {
+		case xml.StartElement:
+			switch start.Name.Local {
+			case "platformRestrictions":
+				if err := dec.DecodeElement(&s.PlatformRestrictions, &start); err != nil {
+					return err
+				}
+			case "extensions":
+				extension, err := extensionsUnmarshalXML(dec, start)
+				if err != nil {
+					return err
+				}
+				s.Extensions = append(s.Extensions, extension)
+			}
+		}
+	}
+	return nil
 }
 
 type CampaignExtensionSettingOperations map[string][]CampaignExtensionSetting
