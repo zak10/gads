@@ -10,7 +10,7 @@ import (
 type ExtensionSetting struct {
 	PlatformRestrictions ExtensionSettingPlatform `xml:"platformRestrictions,omitempty"`
 
-	Extensions []Extensions `xml:"https://adwords.google.com/api/adwords/cm/v201609 extensions,omitempty"`
+	Extensions Extension `xml:"https://adwords.google.com/api/adwords/cm/v201609 extensions,omitempty"`
 }
 
 // https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupExtensionSettingService.ExtensionSetting.Platform
@@ -18,9 +18,13 @@ type ExtensionSetting struct {
 // DESKTOP, MOBILE, NONE
 type ExtensionSettingPlatform string
 
+type Extension interface{}
+
 // https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupExtensionSettingService.ExtensionFeedItem
 // Contains base extension feed item data for an extension in an extension feed managed by AdWords.
 type ExtensionFeedItem struct {
+	XMLName xml.Name `json:"-" xml:"extensions"`
+
 	FeedId                  int64                      `xml:"https://adwords.google.com/api/adwords/cm/v201609 feedId,omitempty"`
 	FeedItemId              int64                      `xml:"https://adwords.google.com/api/adwords/cm/v201609 feedItemId,omitempty"`
 	Status                  *FeedItemStatus            `xml:"https://adwords.google.com/api/adwords/cm/v201609 status,omitempty"`
@@ -51,46 +55,6 @@ type CallFeedItem struct {
 	DisableCallConversionTracking bool               `xml:"https://adwords.google.com/api/adwords/cm/v201609 disableCallConversionTracking,omitempty"`
 }
 
-func getCallFeedItem(ext map[string]interface{}) (item CallFeedItem) {
-	if val, ok := ext["CallPhoneNumber"].(string); ok {
-		item.CallPhoneNumber = val
-	}
-	if val, ok := ext["CallCountryCode"].(string); ok {
-		item.CallCountryCode = val
-	}
-	if val, ok := ext["CallTracking"].(bool); ok {
-		item.CallTracking = val
-	}
-	if val, ok := ext["CallConversionType"].(CallConversionType); ok {
-		if item.CallConversionType.ConversionTypeId > 0 {
-			item.CallConversionType = val
-		}
-	}
-	if val, ok := ext["DisableCallConversionTracking"].(bool); ok {
-		item.DisableCallConversionTracking = val
-	}
-	return
-}
-
-type Extensions interface{}
-
-func (s ExtensionSetting) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	start.Attr = append(
-		start.Attr,
-		xml.Attr{
-			xml.Name{"http://www.w3.org/2001/XMLSchema-instance", "type"},
-			"AdGroupExtensionSetting",
-		},
-	)
-	e.EncodeToken(start)
-	e.EncodeElement(&s.PlatformRestrictions, xml.StartElement{Name: xml.Name{
-		"https://adwords.google.com/api/adwords/cm/v201609",
-		"platformRestrictions"}})
-	extensionsMarshalXML(s.Extensions, e)
-	e.EncodeToken(start.End())
-	return nil
-}
-
 func (s *ExtensionSetting) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) error {
 	for token, err := dec.Token(); err == nil; token, err = dec.Token() {
 		if err != nil {
@@ -108,14 +72,14 @@ func (s *ExtensionSetting) UnmarshalXML(dec *xml.Decoder, start xml.StartElement
 				if err != nil {
 					return err
 				}
-				s.Extensions = append(s.Extensions, extension)
+				s.Extensions = append(s.Extensions.([]interface{}), extension)
 			}
 		}
 	}
 	return nil
 }
 
-func extensionsUnmarshalXML(dec *xml.Decoder, start xml.StartElement) (ext Extensions, err error) {
+func extensionsUnmarshalXML(dec *xml.Decoder, start xml.StartElement) (ext interface{}, err error) {
 	extensionsType, err := findAttr(start.Attr, xml.Name{Space: "http://www.w3.org/2001/XMLSchema-instance", Local: "type"})
 	if err != nil {
 		return
@@ -129,27 +93,4 @@ func extensionsUnmarshalXML(dec *xml.Decoder, start xml.StartElement) (ext Exten
 		err = fmt.Errorf("unknown Extensions type %#v", extensionsType)
 	}
 	return
-}
-
-func extensionsMarshalXML(exts Extensions, e *xml.Encoder) error {
-	for _, ext := range exts.([]Extensions) {
-		var extensionType string
-		extension := ext.(map[string]interface{})
-		extType := FeedType(extension["FeedType"].(string))
-
-		switch extType {
-		case "CALL":
-			extensionType = "CallFeedItem"
-			ext = getCallFeedItem(extension)
-		default:
-			return fmt.Errorf("unknown extension type %#v\n", extType)
-		}
-		e.EncodeElement(&ext, xml.StartElement{
-			xml.Name{baseUrl, "extensions"},
-			[]xml.Attr{
-				xml.Attr{xml.Name{"http://www.w3.org/2001/XMLSchema-instance", "type"}, extensionType},
-			},
-		})
-	}
-	return nil
 }
