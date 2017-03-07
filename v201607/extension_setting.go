@@ -55,27 +55,6 @@ type CallFeedItem struct {
 	DisableCallConversionTracking bool               `xml:"https://adwords.google.com/api/adwords/cm/v201607 disableCallConversionTracking,omitempty"`
 }
 
-func getCallFeedItem(ext map[string]interface{}) (item CallFeedItem) {
-	if val, ok := ext["CallPhoneNumber"].(string); ok {
-		item.CallPhoneNumber = val
-	}
-	if val, ok := ext["CallCountryCode"].(string); ok {
-		item.CallCountryCode = val
-	}
-	if val, ok := ext["CallTracking"].(bool); ok {
-		item.CallTracking = val
-	}
-	if val, ok := ext["CallConversionType"].(CallConversionType); ok {
-		if item.CallConversionType.ConversionTypeId > 0 {
-			item.CallConversionType = val
-		}
-	}
-	if val, ok := ext["DisableCallConversionTracking"].(bool); ok {
-		item.DisableCallConversionTracking = val
-	}
-	return
-}
-
 func (s *ExtensionSetting) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) error {
 	for token, err := dec.Token(); err == nil; token, err = dec.Token() {
 		if err != nil {
@@ -114,27 +93,4 @@ func extensionsUnmarshalXML(dec *xml.Decoder, start xml.StartElement) (ext inter
 		err = fmt.Errorf("unknown Extensions type %#v", extensionsType)
 	}
 	return
-}
-
-func extensionsMarshalXML(exts []interface{}, e *xml.Encoder) error {
-	for _, ext := range exts {
-		var extensionType string
-		extension := ext.(map[string]interface{})
-		extType := FeedType(extension["FeedType"].(string))
-
-		switch extType {
-		case "CALL":
-			extensionType = "CallFeedItem"
-			ext = getCallFeedItem(extension)
-		default:
-			return fmt.Errorf("unknown extension type %#v\n", extType)
-		}
-		e.EncodeElement(&ext, xml.StartElement{
-			xml.Name{baseUrl, "extensions"},
-			[]xml.Attr{
-				xml.Attr{xml.Name{"http://www.w3.org/2001/XMLSchema-instance", "type"}, extensionType},
-			},
-		})
-	}
-	return nil
 }
