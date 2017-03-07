@@ -55,7 +55,49 @@ type CallFeedItem struct {
 	DisableCallConversionTracking bool               `xml:"https://adwords.google.com/api/adwords/cm/v201609 disableCallConversionTracking,omitempty"`
 }
 
-func (s *ExtensionSetting) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) error {
+func extensionsUnmarshalXML(dec *xml.Decoder, start xml.StartElement) (ext interface{}, err error) {
+	extensionsType, err := findAttr(start.Attr, xml.Name{Space: "http://www.w3.org/2001/XMLSchema-instance", Local: "type"})
+	if err != nil {
+		return
+	}
+	switch extensionsType {
+	case "CallFeedItem":
+		c := CallFeedItem{}
+		err = dec.DecodeElement(&c, &start)
+		ext = c
+	default:
+		err = fmt.Errorf("unknown Extensions type %#v", extensionsType)
+	}
+	return
+}
+
+func (s ExtensionSetting) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	e.EncodeToken(start)
+	if s.PlatformRestrictions != "NONE" {
+		e.EncodeElement(&s.PlatformRestrictions, xml.StartElement{Name: xml.Name{
+			"https://adwords.google.com/api/adwords/cm/v201609",
+			"platformRestrictions"}})
+	}
+	switch extType := s.Extensions.(type) {
+	case []CallFeedItem:
+		e.EncodeElement(s.Extensions.([]CallFeedItem), xml.StartElement{
+			xml.Name{baseUrl, "extensions"},
+			[]xml.Attr{
+				xml.Attr{xml.Name{"http://www.w3.org/2001/XMLSchema-instance", "type"}, "CallFeedItem"},
+			},
+		})
+	default:
+		return fmt.Errorf("unknown extension type %#v\n", extType)
+
+	}
+
+	e.EncodeToken(start.End())
+	return nil
+}
+
+func (s *ExtensionSetting) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) (err error) {
+	s.Extensions = []interface{}{}
+
 	for token, err := dec.Token(); err == nil; token, err = dec.Token() {
 		if err != nil {
 			return err
@@ -77,20 +119,4 @@ func (s *ExtensionSetting) UnmarshalXML(dec *xml.Decoder, start xml.StartElement
 		}
 	}
 	return nil
-}
-
-func extensionsUnmarshalXML(dec *xml.Decoder, start xml.StartElement) (ext interface{}, err error) {
-	extensionsType, err := findAttr(start.Attr, xml.Name{Space: "http://www.w3.org/2001/XMLSchema-instance", Local: "type"})
-	if err != nil {
-		return
-	}
-	switch extensionsType {
-	case "CallFeedItem":
-		c := CallFeedItem{}
-		err = dec.DecodeElement(&c, &start)
-		ext = c
-	default:
-		err = fmt.Errorf("unknown Extensions type %#v", extensionsType)
-	}
-	return
 }

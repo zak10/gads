@@ -2,7 +2,6 @@ package v201607
 
 import (
 	"encoding/xml"
-	"fmt"
 )
 
 // https://developers.google.com/adwords/api/docs/reference/v201607/AdGroupExtensionSettingService#query
@@ -17,14 +16,12 @@ func NewAdGroupExtensionSettingService(auth *Auth) *AdGroupExtensionSettingServi
 // https://developers.google.com/adwords/api/docs/reference/v201607/AdGroupExtensionSettingService.AdGroupExtensionSetting
 // An AdGroupExtensionSetting is used to add or modify extensions being served for the specified ad group.
 type AdGroupExtensionSetting struct {
-	AdGroupId        int64             `xml:"https://adwords.google.com/api/adwords/cm/v201607 adGroupId,omitempty"`
-	ExtensionType    FeedType          `xml:"https://adwords.google.com/api/adwords/cm/v201607 extensionType,omitempty"`
-	ExtensionSetting AdGroupExtSetting `xml:"https://adwords.google.com/api/adwords/cm/v201607 extensionSetting,omitempty"`
+	AdGroupId        int64            `xml:"https://adwords.google.com/api/adwords/cm/v201607 adGroupId,omitempty"`
+	ExtensionType    FeedType         `xml:"https://adwords.google.com/api/adwords/cm/v201607 extensionType,omitempty"`
+	ExtensionSetting ExtensionSetting `xml:"https://adwords.google.com/api/adwords/cm/v201607 extensionSetting,omitempty"`
 }
 
 type AdGroupExtensionSettingOperations map[string][]AdGroupExtensionSetting
-
-type AdGroupExtSetting ExtensionSetting
 
 // https://developers.google.com/adwords/api/docs/reference/v201607/AdGroupExtensionSettingService#query
 func (s *AdGroupExtensionSettingService) Query(query string) (settings []AdGroupExtensionSetting, totalCount int64, err error) {
@@ -96,54 +93,4 @@ func (s *AdGroupExtensionSettingService) Mutate(settingsOperations AdGroupExtens
 	}
 
 	return mutateResp.Settings, err
-}
-
-func (s AdGroupExtSetting) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	e.EncodeToken(start)
-	if s.PlatformRestrictions != "NONE" {
-		e.EncodeElement(&s.PlatformRestrictions, xml.StartElement{Name: xml.Name{
-			"https://adwords.google.com/api/adwords/cm/v201607",
-			"platformRestrictions"}})
-	}
-	switch extType := s.Extensions.(type) {
-	case []CallFeedItem:
-		e.EncodeElement(s.Extensions.([]CallFeedItem), xml.StartElement{
-			xml.Name{baseUrl, "extensions"},
-			[]xml.Attr{
-				xml.Attr{xml.Name{"http://www.w3.org/2001/XMLSchema-instance", "type"}, "CallFeedItem"},
-			},
-		})
-	default:
-		return fmt.Errorf("unknown extension type %#v\n", extType)
-
-	}
-
-	e.EncodeToken(start.End())
-	return nil
-}
-
-func (s *AdGroupExtSetting) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) (err error) {
-	s.Extensions = []interface{}{}
-
-	for token, err := dec.Token(); err == nil; token, err = dec.Token() {
-		if err != nil {
-			return err
-		}
-		switch start := token.(type) {
-		case xml.StartElement:
-			switch start.Name.Local {
-			case "platformRestrictions":
-				if err := dec.DecodeElement(&s.PlatformRestrictions, &start); err != nil {
-					return err
-				}
-			case "extensions":
-				extension, err := extensionsUnmarshalXML(dec, start)
-				if err != nil {
-					return err
-				}
-				s.Extensions = append(s.Extensions.([]interface{}), extension)
-			}
-		}
-	}
-	return nil
 }

@@ -2,7 +2,6 @@ package v201607
 
 import (
 	"encoding/xml"
-	"fmt"
 )
 
 type CampaignExtensionSettingService struct {
@@ -16,12 +15,10 @@ func NewCampaignExtensionService(auth *Auth) *CampaignExtensionSettingService {
 // https://developers.google.com/adwords/api/docs/reference/v201607/CampaignExtensionSettingService.CampaignExtensionSetting
 // A CampaignExtensionSetting is used to add or modify extensions being served for the specified campaign.
 type CampaignExtensionSetting struct {
-	CampaignId       int64              `xml:"https://adwords.google.com/api/adwords/cm/v201607 campaignId,omitempty"`
-	ExtensionType    FeedType           `xml:"https://adwords.google.com/api/adwords/cm/v201607 extensionType,omitempty"`
-	ExtensionSetting CampaignExtSetting `xml:"https://adwords.google.com/api/adwords/cm/v201607 extensionSetting,omitempty"`
+	CampaignId       int64            `xml:"https://adwords.google.com/api/adwords/cm/v201607 campaignId,omitempty"`
+	ExtensionType    FeedType         `xml:"https://adwords.google.com/api/adwords/cm/v201607 extensionType,omitempty"`
+	ExtensionSetting ExtensionSetting `xml:"https://adwords.google.com/api/adwords/cm/v201607 extensionSetting,omitempty"`
 }
-
-type CampaignExtSetting ExtensionSetting
 
 type CampaignExtensionSettingOperations map[string][]CampaignExtensionSetting
 
@@ -95,54 +92,4 @@ func (s *CampaignExtensionSettingService) Mutate(settingsOperations CampaignExte
 	}
 
 	return mutateResp.Settings, err
-}
-
-func (s CampaignExtSetting) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	e.EncodeToken(start)
-	if s.PlatformRestrictions != "NONE" {
-		e.EncodeElement(&s.PlatformRestrictions, xml.StartElement{Name: xml.Name{
-			"https://adwords.google.com/api/adwords/cm/v201607",
-			"platformRestrictions"}})
-	}
-	switch extType := s.Extensions.(type) {
-	case []CallFeedItem:
-		e.EncodeElement(s.Extensions.([]CallFeedItem), xml.StartElement{
-			xml.Name{baseUrl, "extensions"},
-			[]xml.Attr{
-				xml.Attr{xml.Name{"http://www.w3.org/2001/XMLSchema-instance", "type"}, "CallFeedItem"},
-			},
-		})
-	default:
-		return fmt.Errorf("unknown extension type %#v\n", extType)
-
-	}
-
-	e.EncodeToken(start.End())
-	return nil
-}
-
-func (s *CampaignExtSetting) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) (err error) {
-	s.Extensions = []interface{}{}
-
-	for token, err := dec.Token(); err == nil; token, err = dec.Token() {
-		if err != nil {
-			return err
-		}
-		switch start := token.(type) {
-		case xml.StartElement:
-			switch start.Name.Local {
-			case "platformRestrictions":
-				if err := dec.DecodeElement(&s.PlatformRestrictions, &start); err != nil {
-					return err
-				}
-			case "extensions":
-				extension, err := extensionsUnmarshalXML(dec, start)
-				if err != nil {
-					return err
-				}
-				s.Extensions = append(s.Extensions.([]interface{}), extension)
-			}
-		}
-	}
-	return nil
 }
