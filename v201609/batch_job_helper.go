@@ -140,7 +140,6 @@ func (s *BatchJobHelper) UploadBatchJobOperations(jobOperations []interface{}, u
 		}
 
 		respBody, err := ioutil.ReadAll(resp.Body)
-		println(string(reqBody))
 
 		if err != nil {
 			return err

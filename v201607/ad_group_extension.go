@@ -2,7 +2,6 @@ package v201607
 
 import (
 	"encoding/xml"
-	"fmt"
 )
 
 // https://developers.google.com/adwords/api/docs/reference/v201607/AdGroupExtensionSettingService#query
@@ -38,7 +37,7 @@ func (s adGroupExtensionSetting) MarshalXML(e *xml.Encoder, start xml.StartEleme
 	e.EncodeElement(&s.PlatformRestrictions, xml.StartElement{Name: xml.Name{
 		"https://adwords.google.com/api/adwords/cm/v201607",
 		"platformRestrictions"}})
-	extensionsMarshalXML(s.Extensions, e)
+	extensionsMarshalXML(s.Extensions.([]interface{}), e)
 	e.EncodeToken(start.End())
 	return nil
 }
@@ -60,7 +59,7 @@ func (s *adGroupExtensionSetting) UnmarshalXML(dec *xml.Decoder, start xml.Start
 				if err != nil {
 					return err
 				}
-				s.Extensions = append(s.Extensions, extension)
+				s.Extensions = append(s.Extensions.([]interface{}), extension)
 			}
 		}
 	}
@@ -105,9 +104,6 @@ func (s *AdGroupExtensionSettingService) Mutate(settingsOperations AdGroupExtens
 	operations := []settingOperations{}
 	for action, settings := range settingsOperations {
 		for _, setting := range settings {
-			if err = identifyExtention(&setting); err != nil {
-				return settings, err
-			}
 			operations = append(operations,
 				settingOperations{
 					Action:  action,
@@ -140,17 +136,4 @@ func (s *AdGroupExtensionSettingService) Mutate(settingsOperations AdGroupExtens
 	}
 
 	return mutateResp.Settings, err
-}
-
-func identifyExtention(setting *AdGroupExtensionSetting) (err error) {
-	switch setting.ExtensionType {
-	case "CALL":
-		for _, ext := range setting.ExtensionSetting.Extensions {
-			item := getCallFeedItem(ext.(map[string]interface{}))
-			setting.ExtensionSetting.Extensions = append(setting.ExtensionSetting.Extensions, item)
-		}
-	default:
-		err = fmt.Errorf("unknown ExtensionType type %#v", setting.ExtensionType)
-	}
-	return
 }
