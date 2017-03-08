@@ -218,6 +218,13 @@ func (mr *MutateResults) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) 
 					return err
 				}
 				mr.Result = agcl
+			case "AdGroupExtensionSetting":
+				cl := AdGroupExtensionSetting{}
+				err := dec.DecodeElement(&cl, &start)
+				if err != nil {
+					return err
+				}
+				mr.Result = cl
 			case "AdGroupLabel":
 				agl := AdGroupLabel{}
 				err := dec.DecodeElement(&agl, &start)
@@ -246,6 +253,13 @@ func (mr *MutateResults) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) 
 					return err
 				}
 				mr.Result = cc
+			case "CampaignExtensionSetting":
+				cl := CampaignExtensionSetting{}
+				err := dec.DecodeElement(&cl, &start)
+				if err != nil {
+					return err
+				}
+				mr.Result = cl
 			case "CampaignLabel":
 				cl := CampaignLabel{}
 				err := dec.DecodeElement(&cl, &start)
@@ -266,6 +280,8 @@ func (mr *MutateResults) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) 
 // getXsiType validates the schema instance type and returns it since Bulk Mutate requires it to be set
 func getXsiType(objectName string) (string, bool) {
 	switch {
+	case strings.Contains(objectName, "AdGroupExtensionSettingOperation"):
+		return "AdGroupExtensionSettingOperation", true
 	case strings.Contains(objectName, "AdGroupAdLabelOperation"):
 		return "AdGroupAdLabelOperation", true
 	case strings.Contains(objectName, "AdGroupAdOperation"):
@@ -284,6 +300,8 @@ func getXsiType(objectName string) (string, bool) {
 		return "BudgetOperation", true
 	case strings.Contains(objectName, "CampaignAdExtensionOperation"):
 		return "CampaignAdExtensionOperation", true
+	case strings.Contains(objectName, "CampaignExtensionSettingOperation"):
+		return "CampaignExtensionSettingOperation", true
 	case strings.Contains(objectName, "CampaignCriterionOperation"):
 		return "CampaignCriterionOperation", true
 	case strings.Contains(objectName, "CampaignLabelOperation"):
